@@ -31,9 +31,21 @@ async def on_message(message):
     await bot.process_commands(message)
 
     
-@bot.command()
+@bot.group()
 @commands.cooldown(rate=1, per=45, type=commands.BucketType.user)
 async def revive(ctx):
+    if ctx.invoked_subcommand is None:
+        embed = discord.Embed(
+            title="Revive Commands",
+            description="""Use `!revive question` to get a random question for revival.
+            Use `!revive suggest` to suggest a new question.
+            Use `!revive pingeveryone` to... do nothing, relax dude.""",
+            color=0x7289DA
+        )
+        await ctx.send(embed=embed)
+
+@revive.command()
+async def question(ctx, *, question: str):
     try:
         with open('questions.txt', 'r', encoding='utf-8') as file:
             questions = file.readlines()
@@ -45,6 +57,7 @@ async def revive(ctx):
             await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
     except FileNotFoundError:
         await ctx.send("Question file not found.")
+@revive.command()
 async def suggestquestion(ctx):
     suggestion = ctx.message.content[len(ctx.prefix) + len(ctx.command.name):].strip()
     if not suggestion:
@@ -64,9 +77,11 @@ async def suggestquestion(ctx):
 
     await owner.send(f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions.")
     await ctx.send("✅ Suggestion sent. It will be reviewed as soon as possible.")
+@revive.command()
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
 
+for cmd in bot.commands:
+    print(f"{cmd} (subcommands: {[c for c in getattr(cmd, 'commands', [])]})")
 TOKEN = os.environ.get('BOT_TOKEN')
-
 bot.run(TOKEN)
