@@ -18,12 +18,9 @@ async def on_message(message):
         return  # Ignore other bots
 
     # If replying to the bot but not pinging it — ignore
-    if message.reference and bot.user not in message.mentions:
-        replied_message = await message.channel.fetch_message(message.reference.message_id)
-        if replied_message.author.id == bot.user.id:
-            return
-
-    # Only respond if bot is actually mentioned
+    if not "<@1389173090956742747>" in message.content:
+        return
+    
     if bot.user in message.mentions:
         response = (
             "Did someone mention me? If this is not about reviving chat, please shut up.\n"
@@ -66,7 +63,7 @@ async def suggestquestion(ctx):
     owner = await bot.fetch_user(1085862271399493732)
 
     await owner.send(f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions.")
-    await ctx.send("✅ Suggestion sent.")
+    await ctx.send("✅ Suggestion sent. It will be reviewed as soon as possible.")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
 
