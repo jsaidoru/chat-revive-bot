@@ -45,7 +45,7 @@ async def revive(ctx):
         await ctx.send(embed=embed)
 
 @revive.command()
-async def question(ctx, *, question: str):
+async def question(ctx):
     try:
         with open('questions.txt', 'r', encoding='utf-8') as file:
             questions = file.readlines()
