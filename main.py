@@ -1,14 +1,31 @@
 import discord
 from discord.ext import commands
 import random
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 intents = discord.Intents.default()
 intents.message_content = True
-
+intents.messages = True
+intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return  # Ignore bot messages
+
+    # Check if bot was mentioned
+    if bot.user in message.mentions:
+        response = "Did someone mention me? If this is not about reviving chat, please shut up. Type !revive to revive chat. Press Ctrl for nothing."
+        await message.channel.send(response)
+
+    await bot.process_commands(message)
+    
 @bot.command()
-async def question(ctx):
+@commands.cooldown(rate=1, per=45, type=commands.BucketType.user)
+async def revive(ctx):
     try:
         with open('questions.txt', 'r', encoding='utf-8') as file:
             questions = file.readlines()
@@ -16,14 +33,27 @@ async def question(ctx):
                 await ctx.send("No questions found.")
                 return
             chosen = random.choice(questions).strip()
-            await ctx.send(f"Question: {chosen}")
+            embed = discord.Embed(title="🧠 Revival question", description=chosen, color=0x7289DA)
+            await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
     except FileNotFoundError:
         await ctx.send("Question file not found.")
+@bot.command()
+async def suggestquestion(ctx):
+    suggestion = ctx.message.content[len(ctx.prefix) + len(ctx.command.name):].strip()
+    if not suggestion:
+        await ctx.send("❌ Please provide a suggestion.")
+        return
+    if len(suggestion) < 10:
+        await ctx.send("❌ Suggestion is too short.")
+        return
+    if len(suggestion) > 400:
+        await ctx.send("❌ Suggestion is too long.")
+        return
+    owner = await bot.fetch_user(1085862271399493732)
 
-import os
-from dotenv import load_dotenv
+    await owner.send(f"📬 Yo jsaidoru, someone suggested: “{suggestion}” for revival questions.")
+    await ctx.send("✅ Suggestion sent.")
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.environ.get('BOT_TOKEN')
 
 bot.run(TOKEN)
