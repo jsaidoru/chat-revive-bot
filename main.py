@@ -37,7 +37,6 @@ async def revive(ctx):
             await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
     except FileNotFoundError:
         await ctx.send("Question file not found.")
-@bot.command()
 async def suggestquestion(ctx):
     suggestion = ctx.message.content[len(ctx.prefix) + len(ctx.command.name):].strip()
     if not suggestion:
@@ -46,13 +45,19 @@ async def suggestquestion(ctx):
     if len(suggestion) < 10:
         await ctx.send("❌ Suggestion is too short.")
         return
-    if len(suggestion) > 400:
+    if len(suggestion) > 300:
         await ctx.send("❌ Suggestion is too long.")
+        return
+    special_chars = set('!@#$%^&()_[]{}|;:\'",.<>`~')
+    if any(c in special_chars for c in suggestion):
+        await ctx.send("xss?")
         return
     owner = await bot.fetch_user(1085862271399493732)
 
-    await owner.send(f"📬 Yo jsaidoru, someone suggested: “{suggestion}” for revival questions.")
+    await owner.send(f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions.")
     await ctx.send("✅ Suggestion sent.")
+async def pingeveryone(ctx):
+    await ctx.send("<@&1363717601859207340> ping! <:ping:1364080547491610695>")
 
 TOKEN = os.environ.get('BOT_TOKEN')
 
