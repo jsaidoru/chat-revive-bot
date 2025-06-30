@@ -17,18 +17,22 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
 
-    # If replying to the bot but not pinging it, ignore
-    if not "<@1389173090956742747>" in message.content:
-        return
-    
-    response = (
-        "Did someone mention me? If this is not about reviving chat, please shut up.\n"
-        "Type `!revive` to revive chat. Press `Ctrl` for nothing."
-    )
-    await message.channel.send(response)
-    await bot.process_commands(message)
+    elif message.content.startswith('!'):
+        # Found a command, process it
+        await bot.process_commands(message)
 
+    # If pinging the bot, print a message
+    elif "<@1389173090956742747>" in message.content:
+        response = (
+            "Did someone mention me? If this is not about reviving chat, please shut up.\n"
+            "Type `!revive` to revive chat. Press `Ctrl` for nothing."
+        )
+        await message.channel.send(response)
     
+    # Otherwise nothing
+    else:
+        return
+
 @bot.group()
 @commands.cooldown(rate=1, per=45, type=commands.BucketType.user)
 async def revive(ctx):
