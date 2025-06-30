@@ -12,16 +12,27 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
+@bot.event
 async def on_message(message):
     if message.author.bot:
-        return  # Ignore bot messages
+        return  # Ignore other bots
 
-    # Check if bot was mentioned
+    # If replying to the bot but not pinging it — ignore
+    if message.reference and bot.user not in message.mentions:
+        replied_message = await message.channel.fetch_message(message.reference.message_id)
+        if replied_message.author.id == bot.user.id:
+            return
+
+    # Only respond if bot is actually mentioned
     if bot.user in message.mentions:
-        response = "Did someone mention me? If this is not about reviving chat, please shut up. Type !revive to revive chat. Press Ctrl for nothing."
+        response = (
+            "Did someone mention me? If this is not about reviving chat, please shut up.\n"
+            "Type `!revive` to revive chat. Press `Ctrl` for nothing."
+        )
         await message.channel.send(response)
 
     await bot.process_commands(message)
+
     
 @bot.command()
 @commands.cooldown(rate=1, per=45, type=commands.BucketType.user)
@@ -57,7 +68,7 @@ async def suggestquestion(ctx):
     await owner.send(f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions.")
     await ctx.send("✅ Suggestion sent.")
 async def pingeveryone(ctx):
-    await ctx.send("<@&1363717601859207340> ping! <:ping:1364080547491610695>")
+    await ctx.send("what are you trying to do")
 
 TOKEN = os.environ.get('BOT_TOKEN')
 
