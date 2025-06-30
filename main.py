@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -45,16 +46,21 @@ async def revive(ctx):
 @revive.command()
 async def question(ctx):
     try:
-        with open('questions.txt', 'r', encoding='utf-8') as file:
-            questions = file.readlines()
-            if not questions:
-                await ctx.send("No questions found.")
-                return
-            chosen = random.choice(questions).strip()
-            embed = discord.Embed(title="🧠 Revival question", description=chosen, color=0x7289DA)
-            await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
-    except FileNotFoundError:
-        await ctx.send("Question file not found.")
+        questions = []
+        for filepath in Path("questions").glob("*.txt"):
+            questions += filepath.read_text(encoding="utf-8").splitlines()
+        # Remove empty lines (easy to leave them accidentally at the end of file)
+        questions = [q for q in questions if q.strip()]
+        if not questions:
+            await ctx.send("No questions found.")
+            return
+        chosen = random.choice(questions).strip()
+        embed = discord.Embed(title="🧠 Revival question", description=chosen, color=0x7289DA)
+        await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
+    except Exception as e:
+        print(f"Error reading question files: {e}")
+        await ctx.send("Error reading question files.")
+
 @revive.command()
 async def suggestquestion(ctx):
     suggestion = ctx.message.content[len(ctx.prefix) + len(ctx.command.name):].strip()
