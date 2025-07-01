@@ -4,7 +4,6 @@ import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
-from google_search import googling
 load_dotenv()
 
 
@@ -144,6 +143,10 @@ async def string(ctx, *, length: int):
     random_string = ''.join(rand.choice(characters) for _ in range(length))
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
+@bot.command()
+async def roll(ctx):
+    choices = ctx.split(",")
+    ctx.send(rand.choice(choices))
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
@@ -151,12 +154,6 @@ async def pingeveryone(ctx):
 @bot.command(help = "typo?")
 async def reviv(ctx):
     await ctx.send("Did you mean revive kiddo?")
-
-@bot.command()
-async def google(ctx):
-    results = googling(ctx)
-    for url in results:
-        await ctx.send(url)
 
 
 TOKEN = os.environ.get('BOT_TOKEN')
