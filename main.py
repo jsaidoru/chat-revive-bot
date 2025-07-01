@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from randomfen import random_fen
 from discord.utils import escape_markdown, escape_mentions
+from profanity_check import predict
 load_dotenv()
 
 
@@ -88,6 +89,9 @@ async def withoutping(ctx):
 
 @revive.command()
 async def manual(ctx, *, question: str):
+    if predict([question])[0]:
+        await ctx.send("🚫 Please avoid using inappropriate words.")
+        return
     clean_question = escape_mentions(escape_markdown(question))
     embed = discord.Embed(
         title="🧠 **Revival question**",
@@ -194,8 +198,14 @@ async def string(ctx, *, length: int):
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @random.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
-async def integer(ctx, *, max: int = 69):
-    await ctx.send(f"Here is a random number from 0 to {max}: {rand.randint(0, 69)}")
+@bot.command()
+async def integer(ctx, min: int = 0, max: int = 69):
+    if max < 0:
+        await ctx.send("❌ Maximum number must be 0 or greater.")
+        return
+
+    number = rand.randint(min, max)
+    await ctx.send(f"Here is a random number from {min} to {max}: {number}")
 @bot.command()
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
