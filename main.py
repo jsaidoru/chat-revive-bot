@@ -151,7 +151,7 @@ async def roll(ctx, *, choices: str):
     if not items:
         await ctx.send("No valid options provided.")
         return
-    choice = random.choice(items)
+    choice = rand.choice(items)
     await ctx.send(f"You rolled: **{choice}**")
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
