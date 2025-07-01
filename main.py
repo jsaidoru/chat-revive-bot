@@ -34,7 +34,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-@bot.command()
+@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.")
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 async def revive(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
@@ -57,7 +57,7 @@ async def revive(ctx):
     await ctx.send(f"# <@&1376043512927359096> \n <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**", embed=embed)
 
 
-@bot.command()
+@bot.command(help = "Suggest a question to be added to the question list. Don't worry about credits.")
 async def suggestquestion(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
@@ -80,7 +80,7 @@ async def suggestquestion(ctx, *, suggestion: str):
     await owner.send(
         f"Suggestion from {ctx.author}:\n> {suggestion}"
     )
-@bot.command()
+@bot.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.")
 async def suggestcommand(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
@@ -104,11 +104,12 @@ async def suggestcommand(ctx, *, suggestion: str):
         f"Suggestion from {ctx.author}:\n> {suggestion}"
     )
 
-@bot.command()
+@bot.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!")
 async def randomfen(ctx):
     fen = random_fen()
     await ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
-@bot.command()
+
+@bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
 
