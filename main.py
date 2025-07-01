@@ -56,7 +56,8 @@ async def revive(ctx):
         timestamp=ctx.message.created_at
     )
         
-    await ctx.send(f"# <@&1376043512927359096> \n <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**", embed=embed)
+    await ctx.send(f"""# <@&1376043512927359096>
+# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
 # === Suggestion commands ===
 @bot.group()
@@ -158,7 +159,12 @@ async def pingeveryone(ctx):
 
 @bot.command(help = "typo?")
 async def reviv(ctx):
-    await ctx.send("Did you mean revive kiddo?")
+    messages = [
+        """What the fuck, reviv? What's that you just said? About making typos and forgetting the letter "e"?""",
+        "Did you mean revive kiddo?",
+        "Reviv or surviv? You better not to mention about that guy."
+    ]
+    await ctx.send(rand.choice(messages))
 
 
 TOKEN = os.environ.get('BOT_TOKEN')
