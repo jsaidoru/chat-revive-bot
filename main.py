@@ -21,7 +21,7 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
-        return  # kan needs to shut up
+        message.channel.send("kan what do you want")
 
     if f"<@{bot.user.id}>" in message.content:
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
@@ -29,15 +29,16 @@ Type `>help` to see my commands.
 """
         await message.channel.send(response)
 
-    await bot.process_commands(message)
+    await bot.process_commands(message) # IMPORTANT!1!!11!
 
 
 
-@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.\n")
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 
 # === Revive command ===
+@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.\n")
 async def revive(ctx):
+    print("debug: this is working")
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
 
