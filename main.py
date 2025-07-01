@@ -4,7 +4,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
-from googlesearch import googling, search
+from google_search import googling
 load_dotenv()
 
 
