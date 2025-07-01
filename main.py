@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import random
+import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
@@ -46,13 +46,13 @@ async def revive(ctx):
         await ctx.send("No questions found.")
         return
 
-    index = random.randint(0, len(questions) - 1)  # Line number (0-based)
+    index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
     chosen = questions[index].strip()
 
     embed = discord.Embed(
         title="🧠 **Revival question**",
         description=chosen,
-        color=random.randint(0, 0xFFFFFF),
+        color=rand.randint(0, 0xFFFFFF),
         timestamp=ctx.message.created_at
     )
         
