@@ -13,7 +13,7 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
-bot = commands.Bot(command_prefix='>', intents=intents)
+bot = commands.Bot(command_prefix=':', intents=intents)
 BOT_OWNER_ID = 1085862271399493732  # replace with your Discord user ID
 pending_suggestions = {}  # Stores user who suggested
 
@@ -42,7 +42,6 @@ async def on_command_error(ctx, error):
 
 
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
-@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 
 # === Revive commands ===
 @bot.group()
@@ -51,6 +50,7 @@ async def revive(ctx):
          await ctx.send("Use commands related to reviving! Use `>help revive` for more info")
 
 @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def withping(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -73,6 +73,7 @@ async def withping(ctx):
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
 @revive.command()
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def withoutping(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -88,6 +89,7 @@ async def withoutping(ctx):
     await ctx.send(f"## Here is a random question:\n **{chosen}**")
 
 @revive.command()
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def manual(ctx, *, question: str):
     clean_question = escape_mentions(escape_markdown(question))
     embed = discord.Embed(
@@ -107,10 +109,10 @@ async def suggest(ctx):
          await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
-@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 
 
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def question(ctx, *, suggestion: str):
     clean_suggestion = escape_mentions(escape_markdown(suggestion))
     if not clean_suggestion:
@@ -131,6 +133,7 @@ async def question(ctx, *, suggestion: str):
     )
 
 @suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def command(ctx, *, suggestion: str):
     clean_suggestion = escape_mentions(escape_markdown(suggestion))
     if not clean_suggestion:
@@ -152,6 +155,7 @@ async def command(ctx, *, suggestion: str):
     )
 
 @suggest.command(help = "Give a feedback about the bot")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def feedback(ctx, *, feedback: str):
     clean_feedback = escape_mentions(escape_markdown(feedback))
     if not clean_feedback:
@@ -188,6 +192,7 @@ async def fen(ctx):
     await ctx.send(f"Here is a random FEN: \n `{fen}`.")
 
 @random.command(help = "Generate a random string of 2-64 characters.\n")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def string(ctx, *, length: int):
     characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     if length < 2 or length > 64:
@@ -197,6 +202,7 @@ async def string(ctx, *, length: int):
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @bot.command()
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
     items = [item.strip() for item in choices.split(',')]
@@ -206,10 +212,12 @@ async def roll(ctx, *, choices: str):
     choice = rand.choice(items)
     await ctx.send(f"You rolled: **{choice}**")
 @bot.command(help = "dont")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
 
 @bot.command(help = "typo?")
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 async def reviv(ctx):
     messages = [
         """What the fuck, reviv? What's that you just said? About making typos and forgetting the letter "e"?""",
