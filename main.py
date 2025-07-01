@@ -144,7 +144,6 @@ async def string(ctx, *, length: int):
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @bot.command()
-@bot.command()
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
     items = [item.strip() for item in choices.split(',')]
