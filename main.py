@@ -144,9 +144,15 @@ async def string(ctx, *, length: int):
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @bot.command()
-async def roll(ctx):
-    choices = ctx.split(",")
-    ctx.send(rand.choice(choices))
+@bot.command()
+async def roll(ctx, *, choices: str):
+    # choices is a string like "apple, banana, orange"
+    items = [item.strip() for item in choices.split(',')]
+    if not items:
+        await ctx.send("No valid options provided.")
+        return
+    choice = random.choice(items)
+    await ctx.send(f"You rolled: **{choice}**")
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
