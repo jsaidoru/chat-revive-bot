@@ -23,7 +23,8 @@ async def on_message(message):
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
         message.channel.send("kan what do you want")
-
+    if not "general" in message.channel.name:
+        return
     if f"<@{bot.user.id}>" in message.content:
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
@@ -34,21 +35,22 @@ Type `>help` to see my commands.
 
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        if ctx.author.id == BOT_OWNER_ID:
-            # Skip cooldown
-            await ctx.reinvoke()
-        else:
-            await ctx.send(f"⏳ You're doing that too often. Try again in {round(error.retry_after)}s.")
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("❌ That command doesn't exist.")
     else:
-        raise error
+        await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
 
-@commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 
-# === Revive command ===
-@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.\n")
+@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+
+# === Revive commands ===
+@bot.group()
 async def revive(ctx):
-    print("debug: this is working")
+     if ctx.invoked_subcommand is None:
+         await ctx.send("Use commands related to reviving! Use `>help revive` for more info")
+
+@revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
+async def withping(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
 
@@ -62,6 +64,34 @@ async def revive(ctx):
     embed = discord.Embed(
         title="🧠 **Revival question**",
         description=chosen,
+        color=rand.randint(0, 0xFFFFFF),
+        timestamp=ctx.message.created_at
+    )
+        
+    await ctx.send(f"""# <@&1376043512927359096>
+# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
+
+@revive.command()
+async def withoutping(ctx):
+    with open("questions.txt", "r", encoding="utf-8") as file:
+        questions = file.readlines()
+
+    if not questions:
+        await ctx.send("No questions found.")
+        return
+
+    index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
+    chosen = questions[index].strip()
+
+        
+    await ctx.send(f"## Here is a random question:\n **{chosen}**")
+
+@revive.command()
+async def manual(ctx, *, question: str):
+    clean_question = escape_mentions(escape_markdown(question))
+    embed = discord.Embed(
+        title="🧠 **Revival question**",
+        description=question,
         color=rand.randint(0, 0xFFFFFF),
         timestamp=ctx.message.created_at
     )
