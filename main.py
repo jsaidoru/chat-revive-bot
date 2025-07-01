@@ -155,7 +155,7 @@ async def reviv(ctx):
 @bot.command()
 async def google(ctx):
     results = googling(ctx)
-    for url in results():
+    for url in results:
         await ctx.send(url)
 
 
