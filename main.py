@@ -15,7 +15,8 @@ bot = commands.Bot(command_prefix='>', intents=intents)
 async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
-
+    if message.author.id == 1368120467147325491:
+        return # kan needs to shut up
     response = """Hello! I am Chat Revival Bot. My prefix is >. Here are some commands you can use:
     revive: Ping Chat Revival Ping role to (maybe) revive a chat.
     suggestquestion: Suggest a revival question to increase randomness.
