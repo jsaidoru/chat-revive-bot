@@ -92,7 +92,7 @@ async def manual(ctx, *, question: str):
     clean_question = escape_mentions(escape_markdown(question))
     embed = discord.Embed(
         title="🧠 **Revival question**",
-        description=question,
+        description=clean_question,
         color=rand.randint(0, 0xFFFFFF),
         timestamp=ctx.message.created_at
     )
