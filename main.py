@@ -31,7 +31,16 @@ Type `>help` to see my commands.
 
     await bot.process_commands(message) # IMPORTANT!1!!11!
 
-
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        if ctx.author.id == BOT_OWNER_ID:
+            # Skip cooldown
+            await ctx.reinvoke()
+        else:
+            await ctx.send(f"⏳ You're doing that too often. Try again in {round(error.retry_after)}s.")
+    else:
+        raise error
 
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 
