@@ -4,6 +4,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
+from evaluate import evaluate
 load_dotenv()
 
 
@@ -124,7 +125,7 @@ async def command(ctx, *, suggestion: str):
 async def random(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("You can generate random stuff. Use `>help random` for more info.")
-        
+
 @random.before_invoke
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 async def random_suggest(ctx):
@@ -132,7 +133,8 @@ async def random_suggest(ctx):
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
     fen = random_fen()
-    await ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
+    evaluation = evaluate(fen)
+    await ctx.send(f"Here is a random FEN: \n `{fen}`. The evaluation of that position is {evaluation}")
 
 @random.command(help = "Generate a random string of 2-64 characters.\n")
 async def string(ctx, *, length: int):
