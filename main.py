@@ -42,6 +42,7 @@ async def on_command_error(ctx, error):
 
 
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 
 # === Revive commands ===
 @bot.group()
@@ -107,8 +108,7 @@ async def suggest(ctx):
 
 @suggest.before_invoke
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
-async def cooldown_suggest(ctx):
-    pass  # No body needed, it just applies the cooldown
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 
 
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
@@ -183,8 +183,7 @@ async def random(ctx):
 
 @random.before_invoke
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-async def random_cooldown(ctx):
-    pass  # No body needed, it just applies the cooldown
+@commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
     fen = random_fen()
