@@ -4,7 +4,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
-from evaluate import evaluate
+from googlesearch import googling
 load_dotenv()
 
 
@@ -133,8 +133,7 @@ async def random_suggest(ctx):
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
     fen = random_fen()
-    evaluation = evaluate(fen)
-    await ctx.send(f"Here is a random FEN: \n `{fen}`. The evaluation of that position is {evaluation}")
+    await ctx.send(f"Here is a random FEN: \n `{fen}`.")
 
 @random.command(help = "Generate a random string of 2-64 characters.\n")
 async def string(ctx, *, length: int):
@@ -152,6 +151,12 @@ async def pingeveryone(ctx):
 @bot.command(help = "typo?")
 async def reviv(ctx):
     await ctx.send("Did you mean revive kiddo?")
+
+@bot.command()
+async def google(ctx):
+    results = googling(ctx)
+    for url in results():
+        await ctx.send(url)
 
 
 TOKEN = os.environ.get('BOT_TOKEN')
