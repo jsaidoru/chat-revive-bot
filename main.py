@@ -106,7 +106,6 @@ async def suggest(ctx):
      if ctx.invoked_subcommand is None:
          await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
-@suggest.before_invoke
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 @commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 
@@ -181,7 +180,6 @@ async def random(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("You can generate random stuff. Use `>help random` for more info.")
 
-@random.before_invoke
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 @commands.check(lambda ctx: ctx.author.id != BOT_OWNER_ID)
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
