@@ -88,7 +88,7 @@ async def suggestcommand(ctx, *, suggestion: str):
     if len(suggestion) > 500:
         await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
         return
-    special_chars = set('!@#$%^&()_[]{}|;:\'",.<>`~')
+    special_chars = set('@#$%^&()_|;:\,.<>`~')
     if any(c in special_chars for c in suggestion):
         await ctx.send("what do you think you are doing?")
         return
