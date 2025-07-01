@@ -11,14 +11,6 @@ intents.messages = True
 intents.guilds = True
 bot = commands.Bot(command_prefix='>', intents=intents)
 
-def pick_random_line(filepath):
-    chosen = None
-    with open(filepath, "r", encoding="utf-8") as f:
-        for i, line in enumerate(f, 1):
-            if random.randrange(i) == 0:
-                chosen = line
-    return chosen.strip()
-
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -39,14 +31,24 @@ async def on_message(message):
 @bot.command()
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 async def revive(ctx):
-    try:
-        question = pick_random_line("questions.txt")
-        embed = discord.Embed(title="🧠 Revival question",
-                              description=question,
-                              color=0x7289DA)
-        await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.name}!!!**", embed=embed)
-    except FileNotFoundError:
-        await ctx.send("Question file not found.")
+    with open("questions.txt", "r", encoding="utf-8") as file:
+        questions = file.readlines()
+
+    if not questions:
+        await ctx.send("No questions found.")
+        return
+
+    index = random.randint(0, len(questions) - 1)  # Line number (0-based)
+    chosen = questions[index].strip()
+
+    embed = discord.Embed(
+        title="🧠 **Revival question**",
+        description=chosen,
+        color=random.randint(0, 0xFFFFFF),
+        timestamp=ctx.message.created_at
+    )
+        
+    await ctx.send(f"# <@&1376043512927359096> **You have been summoned for revival by {ctx.author.display_name}!!!**", embed=embed)
 
 
 @bot.command()
