@@ -23,7 +23,8 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
-        message.channel.send("kan what do you want")
+        # message.channel.send("kan what do you want")
+        return
     if not "general" in message.channel.name:
         return
     if f"<@{bot.user.id}>" in message.content:
