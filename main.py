@@ -64,6 +64,12 @@ async def suggest(ctx):
      if ctx.invoked_subcommand is None:
          await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
+@suggest.before_invoke
+@commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
+async def cooldown_suggest(ctx):
+    pass  # No body needed, it just applies the cooldown
+
+
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
 async def question(ctx, *, suggestion: str):
     if not suggestion:
@@ -118,7 +124,11 @@ async def command(ctx, *, suggestion: str):
 async def random(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("You can generate random stuff. Use `>help random` for more info.")
-
+        
+@random.before_invoke
+@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
+async def random_suggest(ctx):
+    pass  # No body needed, it just applies the cooldown
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
     fen = random_fen()
@@ -130,7 +140,7 @@ async def string(ctx, *, length: int):
     if length < 2 or length > 64:
         await ctx.send("❌ Length must be between 2 and 64 characters.")
         return
-    random_string = ''.join(random.choice(characters) for _ in range(length))
+    random_string = ''.join(rand.choice(characters) for _ in range(length))
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @bot.command(help = "dont")
