@@ -59,7 +59,7 @@ async def revive(ctx):
     await ctx.send(f"# <@&1376043512927359096> \n <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**", embed=embed)
 
 # === Suggestion commands ===
-@bot.group
+@bot.group()
 async def suggest(ctx):
      if ctx.invoked_subcommand is None:
          await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
