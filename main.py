@@ -193,6 +193,9 @@ async def string(ctx, *, length: int):
     random_string = ''.join(rand.choice(characters) for _ in range(length))
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
+@random.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
+async def integer(ctx, *, max: int = 69):
+    await ctx.send(f"Here is a random number from 0 to {max}: {rand.randint(0, 69)}")
 @bot.command()
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
