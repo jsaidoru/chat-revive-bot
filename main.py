@@ -34,7 +34,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.")
+@bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.\n")
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 async def revive(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
@@ -57,7 +57,7 @@ async def revive(ctx):
     await ctx.send(f"# <@&1376043512927359096> \n <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**", embed=embed)
 
 
-@bot.command(help = "Suggest a question to be added to the question list. Don't worry about credits.")
+@bot.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
 async def suggestquestion(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
@@ -68,19 +68,19 @@ async def suggestquestion(ctx, *, suggestion: str):
     if len(suggestion) > 300:
         await ctx.send("❌ Suggestion is too long.")
         return
-    special_chars = set(r'@#$%^&()_|;:\<>`~')
+    special_chars = list(r'@#$%^&_|\<>`~')
     if any(c in special_chars for c in suggestion):
-        await ctx.send("xss?")
+        await ctx.send("what do you think you are doing?")
         return
 
     owner = await bot.fetch_user(BOT_OWNER_ID)
 
     await ctx.send(
-        "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!")
+        "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!\n")
     await owner.send(
         f"Suggestion from {ctx.author}:\n> {suggestion}"
     )
-@bot.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.")
+@bot.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
 async def suggestcommand(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
@@ -91,7 +91,7 @@ async def suggestcommand(ctx, *, suggestion: str):
     if len(suggestion) > 500:
         await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
         return
-    special_chars = set(r'@#$%^&()_|;:\<>`~')
+    special_chars = list(r'@#$%^&_|\<>`~')
     if any(c in special_chars for c in suggestion):
         await ctx.send("what do you think you are doing?")
         return
@@ -104,7 +104,7 @@ async def suggestcommand(ctx, *, suggestion: str):
         f"Suggestion from {ctx.author}:\n> {suggestion}"
     )
 
-@bot.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!")
+@bot.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def randomfen(ctx):
     fen = random_fen()
     await ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
@@ -112,6 +112,11 @@ async def randomfen(ctx):
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
+
+@bot.command(help = "typo?")
+async def reviv(ctx):
+    await ctx.send("Did you mean revive kiddo?")
+
 
 TOKEN = os.environ.get('BOT_TOKEN')
 bot.run(TOKEN)
