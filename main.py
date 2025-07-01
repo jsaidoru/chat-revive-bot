@@ -4,6 +4,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 from randomfen import random_fen
+from discord.utils import escape_markdown, escape_mentions
 load_dotenv()
 
 
@@ -82,42 +83,35 @@ async def cooldown_suggest(ctx):
 
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
 async def question(ctx, *, suggestion: str):
-    if not suggestion:
+    clean_suggestion = escape_mentions(escape_markdown(suggestion))
+    if not clean_suggestion:
         await ctx.send("❌ Please provide a suggestion.")
         return
-    if len(suggestion) < 10:
+    if len(clean_suggestion) < 10:
         await ctx.send("❌ Suggestion is too short.")
         return
-    if len(suggestion) > 300:
+    if len(clean_suggestion) > 300:
         await ctx.send("❌ Suggestion is too long.")
         return
-    special_chars = list(r'@#$%^&_|\<>`~')
-    if any(c in special_chars for c in suggestion):
-        await ctx.send("what do you think you are doing?")
-        return
-
     owner = await bot.fetch_user(BOT_OWNER_ID)
 
     await ctx.send(
         "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!\n")
     await owner.send(
-        f"Suggestion from {ctx.author}:\n> {suggestion}"
+        f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
     )
 
 @suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
 async def command(ctx, *, suggestion: str):
-    if not suggestion:
+    clean_suggestion = escape_mentions(escape_markdown(suggestion))
+    if not clean_suggestion:
         await ctx.send("❌ Please provide a suggestion.")
         return
-    if len(suggestion) < 20:
+    if len(clean_suggestion) < 20:
         await ctx.send("❌ Suggestion is too short. Please provide a detailed suggestion.")
         return
-    if len(suggestion) > 500:
+    if len(clean_suggestion) > 500:
         await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
-        return
-    special_chars = list(r'@#$%^&_|\<>`~')
-    if any(c in special_chars for c in suggestion):
-        await ctx.send("what do you think you are doing?")
         return
 
     owner = await bot.fetch_user(1085862271399493732)
@@ -125,8 +119,30 @@ async def command(ctx, *, suggestion: str):
     await ctx.send(
         "✅ Suggestion sent. It will be reviewed as soon as possible.")
     await owner.send(
-        f"Suggestion from {ctx.author}:\n> {suggestion}"
+        f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
     )
+
+@suggest.command(help = "Give a feedback about the bot")
+async def feedback(ctx, *, feedback: str):
+    clean_feedback = escape_mentions(escape_markdown(feedback))
+    if not clean_feedback:
+        await ctx.send("❌ Please provide a feedback.")
+        return
+    if len(clean_feedback) < 15:
+        await ctx.send("❌ Feedback is too short. Please provide a detailed description.")
+        return
+    if len(clean_feedback) > 600:
+        await ctx.send("❌ Feedback is too long. Go to <#1363732122866815077> please.")
+        return
+
+    owner = await bot.fetch_user(1085862271399493732)
+
+    await ctx.send(
+        "✅ Feedback sent. It will be reviewed as soon as possible.")
+    await owner.send(
+        f"Feedback from {ctx.author}:\n> {clean_feedback}"
+    )
+
 
 
 # === Random Commands ===
@@ -137,7 +153,7 @@ async def random(ctx):
 
 @random.before_invoke
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-async def random_suggest(ctx):
+async def random_cooldown(ctx):
     pass  # No body needed, it just applies the cooldown
 @random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
