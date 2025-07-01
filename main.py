@@ -21,17 +21,16 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
-        return # kan needs to shut up
-    response = """Hello! I am Chat Revival Bot. My prefix is >. Here are some commands you can use:
-    revive: Ping Chat Revival Ping role to (maybe) revive a chat.
-    suggestquestion: Suggest a revival question to increase randomness.
-    ~~pingeveryone: Ping everyone in the server~~ nothing.
-    """
+        return  # kan needs to shut up
 
-    if "<@1389173090956742747>" in message.content:
+    if f"<@{bot.user.id}>" in message.content:
+        response = """Hello! I am Chat Revival Bot. My prefix is >. 
+Type `>help` to see my commands.
+"""
         await message.channel.send(response)
 
     await bot.process_commands(message)
+
 
 
 @bot.command(help = "Revive a chat by pinging Chat Revival Ping role, or you can just answer the question the bot provided.\n")
