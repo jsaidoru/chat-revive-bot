@@ -11,10 +11,32 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.messages = True
 intents.guilds = True
+intents.members = True
 bot = commands.Bot(command_prefix='>', intents=intents)
+BOT_OWNER_ID = 1085862271399493732  # replace with your Discord user ID
+pending_suggestions = {}  # Stores user who suggested
 
 @bot.event
 async def on_message(message):
+    if message.author.id == BOT_OWNER_ID and isinstance(message.channel, discord.DMChannel):
+        if message.content.strip().lower() == "allowed":
+            # Find the suggestion
+            data = pending_suggestions.get(BOT_OWNER_ID)
+            if not data:
+                await message.channel.send("No suggestion to allow.")
+                return
+
+            guild = bot.get_guild(data["guild_id"])
+            channel = guild.get_channel(data["channel_id"])
+            member = guild.get_member(data["author_id"])
+            suggestion = data["suggestion"]
+
+            if channel and member:
+                await channel.send(f"✅ Suggestion approved from {member.mention}:\n> {suggestion}")
+            else:
+                await message.channel.send("Could not find user or channel.")
+
+            del pending_suggestions[BOT_OWNER_ID]
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
@@ -65,18 +87,24 @@ async def suggestquestion(ctx, *, suggestion: str):
     if len(suggestion) > 300:
         await ctx.send("❌ Suggestion is too long.")
         return
-    special_chars = set('!@#$%^&()_[]{}|;:\'",.<>`~')
+    special_chars = set(r'@#$%^&()_|;:\,.<>`~')
     if any(c in special_chars for c in suggestion):
         await ctx.send("xss?")
         return
 
-    owner = await bot.fetch_user(1085862271399493732)
+    owner = await bot.fetch_user(BOT_OWNER_ID)
 
     await ctx.send(
-        "✅ Suggestion sent. It will be reviewed as soon as possible.")
+        "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!")
     await owner.send(
-        f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions."
+        f"Suggestion from {ctx.author}:\n> {suggestion}\nReply with 'allowed' to approve it."
     )
+    pending_suggestions[owner.id] = {
+        "author_id": ctx.author.id,
+        "guild_id": ctx.guild.id,
+        "channel_id": ctx.channel.id,
+        "suggestion": suggestion
+    }
 @bot.command()
 async def suggestcommand(ctx, *, suggestion: str):
     if not suggestion:
@@ -88,7 +116,7 @@ async def suggestcommand(ctx, *, suggestion: str):
     if len(suggestion) > 500:
         await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
         return
-    special_chars = set('@#$%^&()_|;:\,.<>`~')
+    special_chars = set(r'@#$%^&()_|;:\,.<>`~')
     if any(c in special_chars for c in suggestion):
         await ctx.send("what do you think you are doing?")
         return
