@@ -3,7 +3,9 @@ from discord.ext import commands
 import random
 import os
 from dotenv import load_dotenv
+from randomfen import random_fen
 load_dotenv()
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -75,7 +77,34 @@ async def suggestquestion(ctx, *, suggestion: str):
     await owner.send(
         f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions."
     )
+@bot.command()
+async def suggestcommand(ctx, *, suggestion: str):
+    if not suggestion:
+        await ctx.send("❌ Please provide a suggestion.")
+        return
+    if len(suggestion) < 20:
+        await ctx.send("❌ Suggestion is too short. Please provide a detailed suggestion.")
+        return
+    if len(suggestion) > 500:
+        await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
+        return
+    special_chars = set('!@#$%^&()_[]{}|;:\'",.<>`~')
+    if any(c in special_chars for c in suggestion):
+        await ctx.send("what do you think you are doing?")
+        return
 
+    owner = await bot.fetch_user(1085862271399493732)
+
+    await ctx.send(
+        "✅ Suggestion sent. It will be reviewed as soon as possible.")
+    await owner.send(
+        f"📬 Yo jsaidoru, {ctx.message.author} suggested: “{suggestion}” for revival questions."
+    )
+
+@bot.command()
+async def randomfen(ctx):
+    fen = random_fen()
+    ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
 @bot.command()
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
