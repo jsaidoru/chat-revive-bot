@@ -104,7 +104,7 @@ async def suggestcommand(ctx, *, suggestion: str):
 @bot.command()
 async def randomfen(ctx):
     fen = random_fen()
-    ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
+    await ctx.send(f"Here is a random FEN: \n `{fen}`. Good luck playing with that position!")
 @bot.command()
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
