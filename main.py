@@ -64,7 +64,7 @@ async def suggest(ctx):
      if ctx.invoked_subcommand is None:
          await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
-@suggest.command(name = "suggest", help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
+@suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
 async def question(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
@@ -88,7 +88,7 @@ async def question(ctx, *, suggestion: str):
         f"Suggestion from {ctx.author}:\n> {suggestion}"
     )
 
-@suggest.command(name = "suggest", help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
+@suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
 async def command(ctx, *, suggestion: str):
     if not suggestion:
         await ctx.send("❌ Please provide a suggestion.")
