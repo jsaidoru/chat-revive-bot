@@ -7,7 +7,8 @@ class Random(commands.Cog):
 
     @commands.group()
     async def random(self, ctx):
-        await ctx.send("RNG stuff goes here! >")
+        if ctx.invoked_subcommand is None:
+            await ctx.send("🎲 RNG stuff goes here! `>help random` for more info!")
 
     @random.command(help = "Generate a random chess FEN.\n")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
