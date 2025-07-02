@@ -60,34 +60,44 @@ def get_all_commands(cmd: commands.Command, parent=""):
 async def custom_help(ctx):
     embed = discord.Embed(
         title="📘 Help Menu",
-        description="Use `!help <command>` for more details.\n\nCommands are grouped by category (Cog).",
+        description="Use `!help <command>` for more details.",
         color=discord.Color.blurple()
     )
 
-    cogs = {}
+    cog_commands = {}
 
     for cmd in bot.commands:
-        if not cmd.hidden:
-            try:
-                if await cmd.can_run(ctx):
-                    cog_name = cmd.cog_name or "Uncategorized"
-                    cogs.setdefault(cog_name, []).append(cmd)
-            except commands.CommandError:
-                pass
+        if cmd.hidden:
+            continue
 
-    for cog, cmds in cogs.items():
+        try:
+            if not await cmd.can_run(ctx):
+                continue
+        except commands.CommandError:
+            continue
+
+        cog = cmd.cog_name or "Uncategorized"
+        cog_commands.setdefault(cog, []).append(cmd)
+
+    for cog, commands_list in cog_commands.items():
         value = ""
-        for cmd in cmds:
+
+        for cmd in commands_list:
             if isinstance(cmd, commands.Group):
-                subcmds = [f"{cmd.name} {sub.name}" for sub in cmd.commands]
-                for sub in subcmds:
-                    value += f"• `!{sub}`\n"
+                subcmds = [f"`!{cmd.name} {sub.name}`" for sub in cmd.commands]
+                if subcmds:
+                    value += f"• `!{cmd.name}` (group)\n"
+                    for sub in subcmds:
+                        value += f"  └─ {sub}\n"
+                else:
+                    value += f"• `!{cmd.name}`\n"
             else:
                 value += f"• `!{cmd.name}`\n"
 
         embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
 
     await ctx.send(embed=embed)
+
 
 
 # === Revive commands ===
