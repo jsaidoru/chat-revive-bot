@@ -60,24 +60,35 @@ def get_all_commands(cmd: commands.Command, parent=""):
 async def custom_help(ctx):
     embed = discord.Embed(
         title="📘 Help Menu",
-        description="All commands and subcommands are listed below.",
+        description="Use `!help <command>` for more details.\n\nCommands are grouped by category (Cog).",
         color=discord.Color.blurple()
     )
+
+    cogs = {}
 
     for cmd in bot.commands:
         if not cmd.hidden:
             try:
                 if await cmd.can_run(ctx):
-                    for name, desc in get_all_commands(cmd):
-                        embed.add_field(
-                            name=f"!{name}",
-                            value=desc or "No description provided.",
-                            inline=False
-                        )
+                    cog_name = cmd.cog_name or "Uncategorized"
+                    cogs.setdefault(cog_name, []).append(cmd)
             except commands.CommandError:
-                pass  # user can't run the command
+                pass
+
+    for cog, cmds in cogs.items():
+        value = ""
+        for cmd in cmds:
+            if isinstance(cmd, commands.Group):
+                subcmds = [f"{cmd.name} {sub.name}" for sub in cmd.commands]
+                for sub in subcmds:
+                    value += f"• `!{sub}`\n"
+            else:
+                value += f"• `!{cmd.name}`\n"
+
+        embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
 
     await ctx.send(embed=embed)
+
 
 # === Revive commands ===
 @bot.group(invoke_without_command= True)
