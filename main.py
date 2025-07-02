@@ -25,11 +25,14 @@ async def on_message(message):
     if message.author.id == 1368120467147325491:
         # message.channel.send("kan what do you want")
         return
-    if f"<@{bot.user.id}>" in message.content:
+    content = message.content
+    if f"<@{bot.user.id}>" in content:
         response = """Hello! I am Chat Revival Bot. My prefix is >(will be changed in the future). 
 Type `,help` to see my commands.
 """
         await message.channel.send(response)
+    if ">chat revival bot" in content.replace(" ", ""):
+        message.channel.send("and both is better than you")
 
     await bot.process_commands(message) # IMPORTANT!1!!11!
 
@@ -56,47 +59,58 @@ def get_all_commands(cmd: commands.Command, parent=""):
         cmds.append((qualified_name, cmd.help))
     return cmds
 
-@bot.command(name='help')
-async def custom_help(ctx):
+@bot.command(name="help")
+async def custom_help(ctx, *, command_name: str = None):
     embed = discord.Embed(
-        title="📘 Help Menu",
-        description="Use `!help <command>` for more details.",
         color=discord.Color.blurple()
     )
 
-    cog_commands = {}
+    if command_name is None:
+        # No args → show all commands grouped by cog
+        embed.title = "📘 Help Menu"
+        embed.description = "Use `!help <command>` for more details."
 
-    for cmd in bot.commands:
-        if cmd.hidden:
-            continue
+        cog_commands = {}
 
-        try:
-            if not await cmd.can_run(ctx):
+        for cmd in bot.commands:
+            if cmd.hidden:
                 continue
-        except commands.CommandError:
-            continue
+            try:
+                if not await cmd.can_run(ctx):
+                    continue
+            except commands.CommandError:
+                continue
 
-        cog = cmd.cog_name or "Uncategorized"
-        cog_commands.setdefault(cog, []).append(cmd)
+            cog = cmd.cog_name or "Uncategorized"
+            cog_commands.setdefault(cog, []).append(cmd)
 
-    for cog, commands_list in cog_commands.items():
-        value = ""
-
-        for cmd in commands_list:
-            if isinstance(cmd, commands.Group):
-                subcmds = [f"`!{cmd.name} {sub.name}`" for sub in cmd.commands]
-                if subcmds:
+        for cog, commands_list in cog_commands.items():
+            value = ""
+            for cmd in commands_list:
+                if isinstance(cmd, commands.Group):
                     value += f"• `!{cmd.name}` (group)\n"
-                    for sub in subcmds:
-                        value += f"  └─ {sub}\n"
                 else:
                     value += f"• `!{cmd.name}`\n"
-            else:
-                value += f"• `!{cmd.name}`\n"
 
-        embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
+            embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
+        await ctx.send(embed=embed)
+    else:
+        # User typed: >help revive, >help random
+        cmd = bot.get_command(command_name)
+        if cmd is None:
+            await ctx.send(f"❌ Command `{command_name}` not found.")
+            return
 
-    await ctx.send(embed=embed)
+        embed.title = f"❓ Help: `{cmd.qualified_name}`"
+        embed.description = cmd.help or "No description provided."
+
+        if isinstance(cmd, commands.Group) and cmd.commands:
+            value = ""
+            for sub in cmd.commands:
+                value += f"• `!{cmd.name} {sub.name}` - {sub.help or 'No description'}\n"
+            embed.add_field(name="Subcommands", value=value, inline=False)
+
+        await ctx.send(embed=embed)
 
 
 
