@@ -14,10 +14,11 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
-bot = commands.Bot(command_prefix=':', intents=intents)
+bot = commands.Bot(command_prefix=',', intents=intents)
 BOT_OWNER_ID = 1085862271399493732  # replace with your Discord user ID
 pending_suggestions = {}  # Stores user who suggested
 
+# === BOT EVENTS ===
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -28,8 +29,8 @@ async def on_message(message):
     if not "general" in message.channel.name:
         return
     if f"<@{bot.user.id}>" in message.content:
-        response = """Hello! I am Chat Revival Bot. My prefix is :. 
-Type `:help` to see my commands.
+        response = """Hello! I am Chat Revival Bot. My prefix is ,. 
+Type `,help` to see my commands.
 """
         await message.channel.send(response)
 
@@ -42,16 +43,54 @@ async def on_command_error(ctx, error):
     else:
         await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
 
+# Remove default help
 
-@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+bot.remove_command('help')
+
+# Recursive function to get command and its subcommands
+def get_all_commands(cmd: commands.Command, parent=""):
+    cmds = []
+    qualified_name = f"{parent} {cmd.name}".strip()
+    if isinstance(cmd, commands.Group):
+        cmds.append((qualified_name, cmd.help))
+        for sub in cmd.commands:
+            cmds.extend(get_all_commands(sub, qualified_name))
+    else:
+        cmds.append((qualified_name, cmd.help))
+    return cmds
+
+@bot.command(name='help')
+async def custom_help(ctx):
+    embed = discord.Embed(
+        title="📘 Help Menu",
+        description="All commands and subcommands are listed below.",
+        color=discord.Color.blurple()
+    )
+
+    for cmd in bot.commands:
+        if not cmd.hidden:
+            try:
+                if await cmd.can_run(ctx):
+                    for name, desc in get_all_commands(cmd):
+                        embed.add_field(
+                            name=f"!{name}",
+                            value=desc or "No description provided.",
+                            inline=False
+                        )
+            except commands.CommandError:
+                pass  # user can't run the command
+
+    await ctx.send(embed=embed)
 
 # === Revive commands ===
-@bot.group()
+@bot.group(invoke_without_command= True)
+@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def revive(ctx):
-     if ctx.invoked_subcommand is None:
-         await ctx.send("Use commands related to reviving! Use `:help revive` for more info")
+    await ctx.invoke(bot.get_command('revive withping'))
+    await ctx.send("-# check out more revive commands with ,help revive!")
 
 @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
+@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withping(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -74,6 +113,7 @@ async def withping(ctx):
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
 @revive.command()
+@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withoutping(ctx):
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -89,6 +129,7 @@ async def withoutping(ctx):
     await ctx.send(f"## Here is a random question:\n **{chosen}**")
 
 @revive.command()
+@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def manual(ctx, *, question: str):
     if predict([question])[0]:
         await ctx.send("🚫 Please avoid using inappropriate words.")
@@ -106,14 +147,14 @@ async def manual(ctx, *, question: str):
 
 # === Suggestion commands ===
 @bot.group()
+@commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 async def suggest(ctx):
      if ctx.invoked_subcommand is None:
-         await ctx.send("Suggest your ideas! Use `:help suggest` for more info")
-
-@commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
+         await ctx.send("Suggest your ideas! Use `,help suggest` for more info")
 
 
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
+@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
 async def question(ctx, *, suggestion: str):
     clean_suggestion = escape_mentions(escape_markdown(suggestion))
     if not clean_suggestion:
@@ -134,6 +175,7 @@ async def question(ctx, *, suggestion: str):
     )
 
 @suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
+@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
 async def command(ctx, *, suggestion: str):
     clean_suggestion = escape_mentions(escape_markdown(suggestion))
     if not clean_suggestion:
@@ -155,6 +197,7 @@ async def command(ctx, *, suggestion: str):
     )
 
 @suggest.command(help = "Give a feedback about the bot")
+@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
 async def feedback(ctx, *, feedback: str):
     clean_feedback = escape_mentions(escape_markdown(feedback))
     if not clean_feedback:
@@ -181,15 +224,16 @@ async def feedback(ctx, *, feedback: str):
 @bot.group()
 async def random(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send("You can generate random stuff. Use `:help random` for more info.")
+        await ctx.send("You can generate random stuff. Use `,help random` for more info.")
 
+@random.command(help = "Generate a random chess FEN.\n")\
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-@random.command(help = "Generate a random chess FEN. You can use the FEN to play. Good luck!\n")
 async def fen(ctx):
     fen = random_fen()
     await ctx.send(f"Here is a random FEN: \n `{fen}`.")
 
 @random.command(help = "Generate a random string of 2-64 characters.\n")
+@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 async def string(ctx, *, length: int):
     characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     if length < 2 or length > 64:
@@ -199,7 +243,7 @@ async def string(ctx, *, length: int):
     await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
 @random.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
-@bot.command()
+@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 async def integer(ctx, min: int = 0, max: int = 69):
     if max < 0:
         await ctx.send("❌ Maximum number must be 0 or greater.")
@@ -207,7 +251,9 @@ async def integer(ctx, min: int = 0, max: int = 69):
 
     number = rand.randint(min, max)
     await ctx.send(f"Here is a random number from {min} to {max}: {number}")
+
 @bot.command()
+@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
     items = [item.strip() for item in choices.split(',')]
