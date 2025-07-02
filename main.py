@@ -182,6 +182,29 @@ async def manual(ctx, *, question: str):
     await ctx.send(f"""# <@&1376043512927359096>
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
+@revive.command()
+async def withping(ctx):
+    if ctx.channel.id != 1363717602420981934:
+        return await ctx.send("❌ You can't use this command here.")
+    with open("funfacts.txt", "r", encoding="utf-8") as file:
+        funfacts = file.readlines()
+
+    if not funfacts:
+        await ctx.send("No fun facts found.")
+        return
+
+    index = rand.randint(0, len(funfacts) - 1)  # Line number (0-based)
+    chosen = funfacts[index].strip()
+
+    embed = discord.Embed(
+        title="🧠 **Here is a fun fact**",
+        description=chosen,
+        color=rand.randint(0, 0xFFFFFF),
+        timestamp=ctx.message.created_at
+    )
+        
+    await ctx.send(f"""# <@&1376043512927359096>
+# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 # === Suggestion commands ===
 @bot.group()
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
