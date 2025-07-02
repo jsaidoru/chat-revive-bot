@@ -3,8 +3,7 @@ from discord.ext import commands
 import random as rand
 import os
 from dotenv import load_dotenv
-from randomfen import random_fen
-from discord.utils import escape_markdown, escape_mentions
+import asyncio
 load_dotenv()
 
 
@@ -14,7 +13,7 @@ intents.messages = True
 intents.guilds = True
 intents.members = True
 bot = commands.Bot(command_prefix='>', intents=intents)
-BOT_OWNER_ID = 1085862271399493732  # replace with your Discord user ID
+BOT_OWNER_ID = 1085862271399493732
 pending_suggestions = {}  # Stores user who suggested
 
 # === BOT EVENTS ===
@@ -113,204 +112,16 @@ async def custom_help(ctx, *, command_name: str = None):
             embed.add_field(name="Subcommands", value=value, inline=False)
 
         await ctx.send(embed=embed)
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user}")
 
 
+async def load():
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
 
-# === Revive commands ===
-@bot.group(invoke_without_command= True)
-@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
-async def revive(ctx):
-    await ctx.invoke(bot.get_command('revive withping'))
-    await ctx.send("-# check out more revive commands with >help revive!")
-
-@revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
-@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
-async def withping(ctx):
-    if ctx.channel.id != 1363717602420981934:
-        return await ctx.send("❌ You can't use this command here.")
-    with open("questions.txt", "r", encoding="utf-8") as file:
-        questions = file.readlines()
-
-    if not questions:
-        await ctx.send("No questions found.")
-        return
-
-    index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
-    chosen = questions[index].strip()
-
-    embed = discord.Embed(
-        title="🧠 **Revival question**",
-        description=chosen,
-        color=rand.randint(0, 0xFFFFFF),
-        timestamp=ctx.message.created_at
-    )
-        
-    await ctx.send(f"""# <@&1376043512927359096>
-# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
-
-@revive.command(help = "Only picks a random question instead of pinging")
-@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
-async def withoutping(ctx):
-    if ctx.channel.id != 1363717602420981934:
-        return await ctx.send("❌ You can't use this command here.")
-    with open("questions.txt", "r", encoding="utf-8") as file:
-        questions = file.readlines()
-
-    if not questions:
-        await ctx.send("No questions found.")
-        return
-
-    index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
-    chosen = questions[index].strip()
-
-        
-    await ctx.send(f"## Here is a random question:\n **{chosen}**")
-
-@revive.command(help = "Revive the chat with an user-defined question! Do not use inappropriate words!")
-@commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
-async def manual(ctx, *, question: str):
-    if ctx.channel.id != 1363717602420981934:
-        return await ctx.send("❌ You can't use this command here.")
-    clean_question = escape_mentions(escape_markdown(question))
-    embed = discord.Embed(
-        title="🧠 **Revival question**",
-        description=clean_question,
-        color=rand.randint(0, 0xFFFFFF),
-        timestamp=ctx.message.created_at
-    )
-        
-    await ctx.send(f"""# <@&1376043512927359096>
-# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
-
-# === Suggestion commands ===
-@bot.group()
-@commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
-async def suggest(ctx):
-     if ctx.invoked_subcommand is None:
-         await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
-
-
-@suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
-@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
-async def question(ctx, *, suggestion: str):
-    clean_suggestion = escape_mentions(escape_markdown(suggestion))
-    if not clean_suggestion:
-        await ctx.send("❌ Please provide a suggestion.")
-        return
-    if len(clean_suggestion) < 10:
-        await ctx.send("❌ Suggestion is too short.")
-        return
-    if len(clean_suggestion) > 300:
-        await ctx.send("❌ Suggestion is too long.")
-        return
-    owner = await bot.fetch_user(BOT_OWNER_ID)
-
-    await ctx.send(
-        "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!\n")
-    await owner.send(
-        f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
-    )
-
-@suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
-@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
-async def command(ctx, *, suggestion: str):
-    clean_suggestion = escape_mentions(escape_markdown(suggestion))
-    if not clean_suggestion:
-        await ctx.send("❌ Please provide a suggestion.")
-        return
-    if len(clean_suggestion) < 20:
-        await ctx.send("❌ Suggestion is too short. Please provide a detailed suggestion.")
-        return
-    if len(clean_suggestion) > 500:
-        await ctx.send("❌ Suggestion is too long. Go to <#1363732122866815077> please.")
-        return
-
-    owner = await bot.fetch_user(1085862271399493732)
-
-    await ctx.send(
-        "✅ Suggestion sent. It will be reviewed as soon as possible.")
-    await owner.send(
-        f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
-    )
-
-@suggest.command(help = "Give a feedback about the bot")
-@commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
-async def feedback(ctx, *, feedback: str):
-    clean_feedback = escape_mentions(escape_markdown(feedback))
-    if not clean_feedback:
-        await ctx.send("❌ Please provide a feedback.")
-        return
-    if len(clean_feedback) < 15:
-        await ctx.send("❌ Feedback is too short. Please provide a detailed description.")
-        return
-    if len(clean_feedback) > 600:
-        await ctx.send("❌ Feedback is too long. Go to <#1363732122866815077> please.")
-        return
-
-    owner = await bot.fetch_user(1085862271399493732)
-
-    await ctx.send(
-        "✅ Feedback sent. It will be reviewed as soon as possible.")
-    await owner.send(
-        f"Feedback from {ctx.author}:\n> {clean_feedback}"
-    )
-
-
-
-# === Random Commands ===
-@bot.group()
-async def random(ctx):
-    if ctx.invoked_subcommand is None:
-        await ctx.send("You can generate random stuff. Use `>help random` for more info.")
-
-@random.command(help = "Generate a random chess FEN.\n")
-@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-async def fen(ctx):
-    fen = random_fen()
-    await ctx.send(f"Here is a random FEN: \n `{fen}`.")
-
-@random.command(help = "Generate a random string of 2-64 characters.\n")
-@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-async def string(ctx, *, length: int):
-    characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    if length < 2 or length > 64:
-        await ctx.send("❌ Length must be between 2 and 64 characters.")
-        return
-    random_string = ''.join(rand.choice(characters) for _ in range(length))
-    await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
-
-@random.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
-@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-async def integer(ctx, min: int = 0, max: int = 69):
-    if max < 0:
-        await ctx.send("❌ Maximum number must be 0 or greater.")
-        return
-
-    number = rand.randint(min, max)
-    await ctx.send(f"Here is a random number from {min} to {max}: {number}")
-
-@random.command(help = "Generate a random fun fact")
-async def funfact(ctx):
-    if ctx.channel.id != 1363717602420981934:
-        return await ctx.send("❌ You can't use this command here.")
-    with open("funfacts.txt", "r", encoding="utf-8") as file:
-        funfacts = file.readlines()
-
-    if not funfacts:
-        await ctx.send("No fun facts found.")
-        return
-
-    index = rand.randint(0, len(funfacts) - 1)  # Line number (0-based)
-    chosen = funfacts[index].strip()
-
-    embed = discord.Embed(
-        title="🧠 **Here is a fun fact**",
-        description=chosen,
-        color=rand.randint(0, 0xFFFFFF),
-        timestamp=ctx.message.created_at
-    )
-        
-    await ctx.send(f"<@{ctx.author.id}>", embed=embed)
 
 @bot.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
 @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
@@ -336,6 +147,9 @@ async def reviv(ctx):
     ]
     await ctx.send(rand.choice(messages))
 
-
 TOKEN = os.environ.get('BOT_TOKEN')
-bot.run(TOKEN)
+async def main():
+    async with bot:
+        await load()
+        await bot.start(TOKEN)
+asyncio.run(main())
