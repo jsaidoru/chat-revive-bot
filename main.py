@@ -31,8 +31,8 @@ async def on_message(message):
 Type `,help` to see my commands.
 """
         await message.channel.send(response)
-    if ">chat revival bot" in content.replace(" ", ""):
-        message.channel.send("and both is better than you")
+    if ">chat revival bot" in content.replace(" ", "").lower():
+        await message.channel.send("and both is better than you")
 
     await bot.process_commands(message) # IMPORTANT!1!!11!
 
