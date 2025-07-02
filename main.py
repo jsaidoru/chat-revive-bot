@@ -13,7 +13,7 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
-bot = commands.Bot(command_prefix=',', intents=intents)
+bot = commands.Bot(command_prefix='>', intents=intents)
 BOT_OWNER_ID = 1085862271399493732  # replace with your Discord user ID
 pending_suggestions = {}  # Stores user who suggested
 
@@ -26,7 +26,7 @@ async def on_message(message):
         # message.channel.send("kan what do you want")
         return
     if f"<@{bot.user.id}>" in message.content:
-        response = """Hello! I am Chat Revival Bot. My prefix is ,. 
+        response = """Hello! I am Chat Revival Bot. My prefix is >(will be changed in the future). 
 Type `,help` to see my commands.
 """
         await message.channel.send(response)
