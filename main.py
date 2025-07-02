@@ -27,8 +27,8 @@ async def on_message(message):
         return
     content = message.content
     if f"<@{bot.user.id}>" in content:
-        response = """Hello! I am Chat Revival Bot. My prefix is >(will be changed in the future). 
-Type `,help` to see my commands.
+        response = """Hello! I am Chat Revival Bot. My prefix is >. 
+Type `>help` to see my commands.
 """
         await message.channel.send(response)
     if ">chatrevivalbot" in content.replace(" ", "").lower():
@@ -70,7 +70,7 @@ async def custom_help(ctx, *, command_name: str = None):
     if command_name is None:
         # No args → show all commands grouped by cog
         embed.title = "📘 Help Menu"
-        embed.description = "Use `!help <command>` for more details."
+        embed.description = "Use `>help <command>` for more details."
 
         cog_commands = {}
 
@@ -90,9 +90,9 @@ async def custom_help(ctx, *, command_name: str = None):
             value = ""
             for cmd in commands_list:
                 if isinstance(cmd, commands.Group):
-                    value += f"• `!{cmd.name}` (group)\n"
+                    value += f"• `>{cmd.name}` (group)\n"
                 else:
-                    value += f"• `!{cmd.name}`\n"
+                    value += f"• `>{cmd.name}`\n"
 
             embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
         await ctx.send(embed=embed)
@@ -121,7 +121,7 @@ async def custom_help(ctx, *, command_name: str = None):
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def revive(ctx):
     await ctx.invoke(bot.get_command('revive withping'))
-    await ctx.send("-# check out more revive commands with ,help revive!")
+    await ctx.send("-# check out more revive commands with >help revive!")
 
 @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
@@ -148,7 +148,7 @@ async def withping(ctx):
     await ctx.send(f"""# <@&1376043512927359096>
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
-@revive.command()
+@revive.command(help = "Only picks a random question instead of pinging")
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withoutping(ctx):
     if ctx.channel.id != 1363717602420981934:
@@ -166,7 +166,7 @@ async def withoutping(ctx):
         
     await ctx.send(f"## Here is a random question:\n **{chosen}**")
 
-@revive.command()
+@revive.command(help = "Revive the chat with an user-defined question! Do not use inappropriate words!")
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def manual(ctx, *, question: str):
     if ctx.channel.id != 1363717602420981934:
@@ -182,35 +182,12 @@ async def manual(ctx, *, question: str):
     await ctx.send(f"""# <@&1376043512927359096>
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
-@revive.command()
-async def funfact(ctx):
-    if ctx.channel.id != 1363717602420981934:
-        return await ctx.send("❌ You can't use this command here.")
-    with open("funfacts.txt", "r", encoding="utf-8") as file:
-        funfacts = file.readlines()
-
-    if not funfacts:
-        await ctx.send("No fun facts found.")
-        return
-
-    index = rand.randint(0, len(funfacts) - 1)  # Line number (0-based)
-    chosen = funfacts[index].strip()
-
-    embed = discord.Embed(
-        title="🧠 **Here is a fun fact**",
-        description=chosen,
-        color=rand.randint(0, 0xFFFFFF),
-        timestamp=ctx.message.created_at
-    )
-        
-    await ctx.send(f"""# <@&1376043512927359096>
-# <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 # === Suggestion commands ===
 @bot.group()
 @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
 async def suggest(ctx):
      if ctx.invoked_subcommand is None:
-         await ctx.send("Suggest your ideas! Use `,help suggest` for more info")
+         await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
 
 @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
@@ -284,7 +261,7 @@ async def feedback(ctx, *, feedback: str):
 @bot.group()
 async def random(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send("You can generate random stuff. Use `,help random` for more info.")
+        await ctx.send("You can generate random stuff. Use `>help random` for more info.")
 
 @random.command(help = "Generate a random chess FEN.\n")
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
@@ -312,7 +289,30 @@ async def integer(ctx, min: int = 0, max: int = 69):
     number = rand.randint(min, max)
     await ctx.send(f"Here is a random number from {min} to {max}: {number}")
 
-@bot.command()
+@random.command(help = "Generate a random fun fact")
+async def funfact(ctx):
+    if ctx.channel.id != 1363717602420981934:
+        return await ctx.send("❌ You can't use this command here.")
+    with open("funfacts.txt", "r", encoding="utf-8") as file:
+        funfacts = file.readlines()
+
+    if not funfacts:
+        await ctx.send("No fun facts found.")
+        return
+
+    index = rand.randint(0, len(funfacts) - 1)  # Line number (0-based)
+    chosen = funfacts[index].strip()
+
+    embed = discord.Embed(
+        title="🧠 **Here is a fun fact**",
+        description=chosen,
+        color=rand.randint(0, 0xFFFFFF),
+        timestamp=ctx.message.created_at
+    )
+        
+    await ctx.send(f"<@{ctx.author.id}>", embed=embed)
+
+@bot.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
 @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 async def roll(ctx, *, choices: str):
     # choices is a string like "apple, banana, orange"
@@ -322,6 +322,7 @@ async def roll(ctx, *, choices: str):
         return
     choice = rand.choice(items)
     await ctx.send(f"You rolled: **{choice}**")
+
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
