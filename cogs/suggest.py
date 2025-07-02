@@ -4,14 +4,14 @@ BOT_OWNER_ID = 1085862271399493732
 class Suggest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    @commands.group()
     @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
-
     async def suggest(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
 
-
-    @commands.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
+    @suggest.command(help = "Suggest a question to be added to the question list. Don't worry about credits.\n")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def question(self, ctx, *, suggestion: str):
         clean_suggestion = escape_mentions(escape_markdown(suggestion))
@@ -32,7 +32,7 @@ class Suggest(commands.Cog):
             f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
         )
 
-    @commands.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
+    @suggest.command(help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def command(self, ctx, *, suggestion: str):
         clean_suggestion = escape_mentions(escape_markdown(suggestion))
@@ -54,7 +54,7 @@ class Suggest(commands.Cog):
             f"Suggestion from {ctx.author}:\n> {clean_suggestion}"
         )
 
-    @commands.command(help = "Give a feedback about the bot")
+    @suggest.command(help = "Give a feedback about the bot")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def feedback(self, ctx, *, feedback: str):
         clean_feedback = escape_mentions(escape_markdown(feedback))

@@ -5,13 +5,17 @@ from randomfen import random_fen
 
 class Random(commands.Cog):
 
-    @commands.command(help = "Generate a random chess FEN.\n")
+    @commands.group()
+    async def random(self, ctx):
+        await ctx.send("RNG stuff goes here! >")
+
+    @random.command(help = "Generate a random chess FEN.\n")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def fen(self, ctx):
         fen = random_fen()
         await ctx.send(f"Here is a random FEN: \n `{fen}`.")
 
-    @commands.command(help = "Generate a random string of 2-64 characters.\n")
+    @random.command(help = "Generate a random string of 2-64 characters.\n")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def string(self, ctx, *, length: int):
         characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -21,7 +25,7 @@ class Random(commands.Cog):
         random_string = ''.join(rand.choice(characters) for _ in range(length))
         await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
-    @commands.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
+    @random.command(help = "Generate a random number from 0 to the number specified. If not, default is 69")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def integer(self, ctx, min: int = 0, max: int = 69):
         if max < 0:
@@ -31,8 +35,7 @@ class Random(commands.Cog):
         number = rand.randint(min, max)
         await ctx.send(f"Here is a random number from {min} to {max}: {number}")
 
-    @commands.command(help = "Generate a random fun fact")
-
+    @random.command(help = "Generate a random fun fact")
     async def funfact(self, ctx):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")

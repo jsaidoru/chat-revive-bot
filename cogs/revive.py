@@ -5,12 +5,14 @@ from discord.utils import escape_markdown, escape_mentions
 class Revive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.group(invoke_without_command = True)
     @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
     async def revive(self, ctx):
         await ctx.invoke(self.bot.get_command('revive withping'))
         await ctx.send("-# check out more revive commands with >help revive!")
 
-    @commands.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
+    @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
     @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
     async def withping(self, ctx):
         if ctx.channel.id != 1363717602420981934:
@@ -35,7 +37,7 @@ class Revive(commands.Cog):
         await ctx.send(f"""# <@&1376043512927359096>
     # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
-    @commands.command(help = "Only picks a random question instead of pinging")
+    @revive.command(help = "Only picks a random question instead of pinging")
     @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
     async def withoutping(self, ctx):
         if ctx.channel.id != 1363717602420981934:
@@ -53,7 +55,7 @@ class Revive(commands.Cog):
             
         await ctx.send(f"## Here is a random question:\n **{chosen}**")
 
-    @commands.command(help = "Revive the chat with an user-defined question! Do not use inappropriate words!")
+    @revive.command(help = "Revive the chat with an user-defined question! Do not use inappropriate words!")
     @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
     async def manual(self, ctx, *, question: str):
         if ctx.channel.id != 1363717602420981934:
@@ -68,3 +70,6 @@ class Revive(commands.Cog):
             
         await ctx.send(f"""# <@&1376043512927359096>
     # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
+
+async def setup(bot):
+    await bot.add_cog(Revive(bot))
