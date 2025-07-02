@@ -226,7 +226,7 @@ async def random(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("You can generate random stuff. Use `,help random` for more info.")
 
-@random.command(help = "Generate a random chess FEN.\n")\
+@random.command(help = "Generate a random chess FEN.\n")
 @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 async def fen(ctx):
     fen = random_fen()
