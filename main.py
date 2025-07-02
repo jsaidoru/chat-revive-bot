@@ -183,7 +183,7 @@ async def manual(ctx, *, question: str):
 # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""", embed=embed)
 
 @revive.command()
-async def withping(ctx):
+async def funfact(ctx):
     if ctx.channel.id != 1363717602420981934:
         return await ctx.send("❌ You can't use this command here.")
     with open("funfacts.txt", "r", encoding="utf-8") as file:
