@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 from randomfen import random_fen
 from discord.utils import escape_markdown, escape_mentions
-from profanity_check import predict
 load_dotenv()
 
 
@@ -135,9 +134,6 @@ async def withoutping(ctx):
 async def manual(ctx, *, question: str):
     if ctx.channel.id != 123456789012345678:
         return await ctx.send("❌ You can't use this command here.")
-    if predict([question])[0]:
-        await ctx.send("🚫 Please avoid using inappropriate words.")
-        return
     clean_question = escape_mentions(escape_markdown(question))
     embed = discord.Embed(
         title="🧠 **Revival question**",
