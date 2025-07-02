@@ -26,8 +26,6 @@ async def on_message(message):
     if message.author.id == 1368120467147325491:
         # message.channel.send("kan what do you want")
         return
-    if not "general" in message.channel.name:
-        return
     if f"<@{bot.user.id}>" in message.content:
         response = """Hello! I am Chat Revival Bot. My prefix is ,. 
 Type `,help` to see my commands.
@@ -92,6 +90,8 @@ async def revive(ctx):
 @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withping(ctx):
+    if ctx.channel.id != 123456789012345678:
+        return await ctx.send("❌ You can't use this command here.")
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
 
@@ -115,6 +115,8 @@ async def withping(ctx):
 @revive.command()
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withoutping(ctx):
+    if ctx.channel.id != 123456789012345678:
+        return await ctx.send("❌ You can't use this command here.")
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
 
@@ -131,6 +133,8 @@ async def withoutping(ctx):
 @revive.command()
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def manual(ctx, *, question: str):
+    if ctx.channel.id != 123456789012345678:
+        return await ctx.send("❌ You can't use this command here.")
     if predict([question])[0]:
         await ctx.send("🚫 Please avoid using inappropriate words.")
         return
