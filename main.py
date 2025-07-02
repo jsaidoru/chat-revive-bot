@@ -89,7 +89,7 @@ async def revive(ctx):
 @revive.command(help = "Revive a chat by pinging Chat Revival Ping role.\n")
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withping(ctx):
-    if ctx.channel.id != 123456789012345678:
+    if ctx.channel.id != 1363717602420981934:
         return await ctx.send("❌ You can't use this command here.")
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -114,7 +114,7 @@ async def withping(ctx):
 @revive.command()
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def withoutping(ctx):
-    if ctx.channel.id != 123456789012345678:
+    if ctx.channel.id != 1363717602420981934:
         return await ctx.send("❌ You can't use this command here.")
     with open("questions.txt", "r", encoding="utf-8") as file:
         questions = file.readlines()
@@ -132,7 +132,7 @@ async def withoutping(ctx):
 @revive.command()
 @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
 async def manual(ctx, *, question: str):
-    if ctx.channel.id != 123456789012345678:
+    if ctx.channel.id != 1363717602420981934:
         return await ctx.send("❌ You can't use this command here.")
     clean_question = escape_mentions(escape_markdown(question))
     embed = discord.Embed(
