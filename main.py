@@ -5,9 +5,9 @@ import random as rand
 import os
 from dotenv import load_dotenv
 import asyncio
-import math
-import io
-import contextlib
+import asyncio
+import textwrap
+import subprocess
 load_dotenv()
 
 
@@ -138,47 +138,35 @@ async def reviv(ctx):
     ]
     await ctx.send(rand.choice(messages))
 
+
 @bot.command()
-@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
-    safe_builtins = {
-        "abs": abs,
-        "max": max,
-        "min": min,
-        "sum": sum,
-        "range": range,
-        "len": len,
-        "print": print,
-        "int": int,
-        "float": float,
-        "str": str,
-        "bool": bool,
-    }
+    code = textwrap.dedent(code)
 
-    safe_globals = {
-        "__builtins__": safe_builtins,
-        "math": math
-    }
-
-    context = {}
-
-    # 👇 Capture print output
-    buffer = io.StringIO()
     try:
-        with contextlib.redirect_stdout(buffer):
-            exec(code, safe_globals, context)
+        proc = await asyncio.create_subprocess_exec(
+            "python", "sandbox.py",
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
 
-        # First check for result variable
-        if "result" in context:
-            result = context["result"]
-        else:
-            output = buffer.getvalue().strip()
-            result = output if output else "✅ Code ran, but no output."
+        stdout, stderr = await asyncio.wait_for(
+            proc.communicate(code.encode()), timeout=3  # ⏱️ 3-second timeout
+        )
 
+        output = stdout.decode().strip()
+        if not output:
+            output = "✅ Code executed with no output."
+
+    except asyncio.TimeoutError:
+        output = "❌ Timeout: Your code ran too long."
     except Exception as e:
-        result = f"❌ Error: {e}"
+        output = f"❌ Execution error: {e}"
 
-    await ctx.send(str(result)[:1900])  # Discord message limit safety
+    await ctx.send(output[:1900])  # prevent hitting Discord's limit
+
 
 
 TOKEN = os.environ.get('BOT_TOKEN')
