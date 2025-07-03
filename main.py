@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import asyncio
 import asyncio
 import textwrap
-import subprocess
+from is_safe_code import is_safe_ast
 load_dotenv()
 
 
@@ -142,6 +142,9 @@ async def reviv(ctx):
 @bot.command()
 @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
+    is_safe, reason = is_safe_ast(code)
+    if not is_safe:
+        return await ctx.send(f"❌ Unsafe code blocked: {reason}")
     code = textwrap.dedent(code)
 
     try:
@@ -164,8 +167,12 @@ async def execute(ctx, *, code: str):
         output = "❌ Timeout: Your code ran too long."
     except Exception as e:
         output = f"❌ Execution error: {e}"
-
-    await f"First 500 characters of the result: \n {ctx.send(output[:500])}"  # prevent hitting Discord's limit
+    
+    clean_output = escape_markdown(escape_mentions(output[:500]))
+    if any(x in clean_output for x in ["@everyone", "@here", "<@&", "<@"]):
+        await ctx.send("❌ What do you think you are trying to do?.")
+        return
+    await ctx.send(f"First 500 characters of the result: \n {clean_output}", allowed_mentions=discord.AllowedMentions.none())
 
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
