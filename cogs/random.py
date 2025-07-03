@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import escape_markdown, escape_mentions
 import random as rand
 from randomfen import random_fen
 
@@ -19,7 +20,7 @@ class Random(commands.Cog):
     @random.command(help = "Generate a random string of 2-64 characters.\n")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def string(self, ctx, *, length: int):
-        characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
         if length > 1958:
             await ctx.send("❌ String length must be 1958 characters max.")
             return
@@ -57,6 +58,40 @@ class Random(commands.Cog):
 
         embed = discord.Embed(
             title="🧠 **Here is a fun fact**",
+            description=chosen,
+            color=rand.randint(0, 0xFFFFFF),
+            timestamp=ctx.message.created_at
+        )
+            
+        await ctx.send(f"<@{ctx.author.id}>", embed=embed)
+    @random.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+    async def roll(self, ctx, *, choices: str):
+        clean_choices = escape_mentions(escape_markdown(choices))
+        # choices is a string like "apple, banana, orange"
+        items = [item.strip() for item in clean_choices.split(',')]
+        if not items:
+            await ctx.send("No valid options provided.")
+            return
+        choice = rand.choice(items)
+        await ctx.send(f"You rolled: **{choice}**")
+
+    @random.command(help = "Generate a random fun fact")
+    async def newsticker(self, ctx):
+        if ctx.channel.id != 1363717602420981934:
+            return await ctx.send("❌ You can't use this command here.")
+        with open("newstickers.txt", "r", encoding="utf-8") as file:
+            newstickers = file.readlines()
+
+        if not newstickers:
+            await ctx.send("No news tickers found.")
+            return
+
+        index = rand.randint(0, len(newstickers) - 1)  # Line number (0-based)
+        chosen = newstickers[index].strip()
+
+        embed = discord.Embed(
+            title="🧠 **Here is a news ticker**",
             description=chosen,
             color=rand.randint(0, 0xFFFFFF),
             timestamp=ctx.message.created_at
