@@ -23,8 +23,7 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
-        # message.channel.send("kan what do you want")
-        return
+        message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
     content = message.content
     if f"<@{bot.user.id}>" in content:
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
@@ -123,18 +122,6 @@ async def load():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 
-@bot.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
-@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-async def roll(ctx, *, choices: str):
-    clean_choices = escape_mentions(escape_markdown(choices))
-    # choices is a string like "apple, banana, orange"
-    items = [item.strip() for item in clean_choices.split(',')]
-    if not items:
-        await ctx.send("No valid options provided.")
-        return
-    choice = rand.choice(items)
-    await ctx.send(f"You rolled: **{choice}**")
-
 @bot.command(help = "dont")
 async def pingeveryone(ctx):
     await ctx.send("what are you trying to do")
@@ -148,6 +135,20 @@ async def reviv(ctx):
     ]
     await ctx.send(rand.choice(messages))
 
+safe_builtins = {
+    "print": print,
+    "range": range,
+    "len": len
+}
+
+safe_globals = {
+    "__builtins__": safe_builtins
+}
+
+@bot.command()
+@commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
+async def execute(ctx, *, code: str):
+    result = exec(code, safe_globals)
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
     async with bot:
