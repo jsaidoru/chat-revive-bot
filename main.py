@@ -22,10 +22,10 @@ pending_suggestions = {}  # Stores user who suggested
 async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
-    if message.author.id == 1368120467147325491:
-        await message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
     content = message.content
     if f"<@{bot.user.id}>" in content:
+        if message.author.id == 1368120467147325491:
+            await message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
 """
