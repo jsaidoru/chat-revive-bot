@@ -1,5 +1,6 @@
 import sys
 import math
+import time
 
 safe_builtins = {
     "abs": abs, "max": max, "min": min, "sum": sum, "range": range,
@@ -8,7 +9,8 @@ safe_builtins = {
 
 safe_globals = {
     "__builtins__": safe_builtins,
-    "math": math
+    "math": math,
+    "time": time
 }
 
 code = sys.stdin.read()

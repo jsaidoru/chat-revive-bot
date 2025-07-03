@@ -165,9 +165,7 @@ async def execute(ctx, *, code: str):
     except Exception as e:
         output = f"❌ Execution error: {e}"
 
-    await ctx.send(output[:1900])  # prevent hitting Discord's limit
-
-
+    await f"First 500 characters of the result: \n {ctx.send(output[:500])}"  # prevent hitting Discord's limit
 
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
