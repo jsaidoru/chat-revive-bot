@@ -1,10 +1,11 @@
 import ast
 from typing import Tuple
 
+
 def is_safe_ast(code: str) -> Tuple[bool, str]:
     """Returns (True, '') if safe, else (False, reason)."""
     try:
-        tree = ast.parse(code, mode='exec')
+        tree = ast.parse(code, mode="exec")
     except SyntaxError as e:
         return False, f"Syntax error: {e}"
 

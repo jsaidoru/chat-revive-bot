@@ -3,15 +3,20 @@ import math
 import time
 
 safe_builtins = {
-    "abs": abs, "max": max, "min": min, "sum": sum, "range": range,
-    "len": len, "print": print, "int": int, "float": float, "str": str, "bool": bool
+    "abs": abs,
+    "max": max,
+    "min": min,
+    "sum": sum,
+    "range": range,
+    "len": len,
+    "print": print,
+    "int": int,
+    "float": float,
+    "str": str,
+    "bool": bool,
 }
 
-safe_globals = {
-    "__builtins__": safe_builtins,
-    "math": math,
-    "time": time
-}
+safe_globals = {"__builtins__": safe_builtins, "math": math, "time": time}
 
 code = sys.stdin.read()
 context = {}
