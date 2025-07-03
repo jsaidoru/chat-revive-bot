@@ -70,19 +70,9 @@ async def load():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 
-@bot.command(help="dont")
-async def pingeveryone(ctx):
-    await ctx.send("what are you trying to do")
+safe_builtins = {"print": print, "range": range, "len": len}
 
-
-@bot.command(help="typo?")
-async def reviv(ctx):
-    messages = [
-        """What the fuck, reviv? What's that you just said? About making typos and forgetting the letter "e"?""",
-        "Did you mean revive kiddo?",
-        "Reviv or surviv? You better not to mention about that guy.",
-    ]
-    await ctx.send(rand.choice(messages))
+safe_globals = {"__builtins__": safe_builtins}
 
 
 @bot.command("Execute Python codes")
