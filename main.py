@@ -4,6 +4,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 import asyncio
+from discord.utils import escape_markdown, escape_mentions
 load_dotenv()
 
 
@@ -60,6 +61,9 @@ def get_all_commands(cmd: commands.Command, parent=""):
         cmds.append((qualified_name, cmd.help))
     return cmds
 
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user}")
 @bot.command(name="help")
 async def custom_help(ctx, *, command_name: str = None):
     embed = discord.Embed(
@@ -108,14 +112,10 @@ async def custom_help(ctx, *, command_name: str = None):
         if isinstance(cmd, commands.Group) and cmd.commands:
             value = ""
             for sub in cmd.commands:
-                value += f"• `!{cmd.name} {sub.name}` - {sub.help or 'No description'}\n"
+                value += f"• `>{cmd.name} {sub.name}` - {sub.help or 'No description'}\n"
             embed.add_field(name="Subcommands", value=value, inline=False)
 
         await ctx.send(embed=embed)
-@bot.event
-async def on_ready():
-    print(f"Logged in as {bot.user}")
-
 
 async def load():
     for filename in os.listdir("./cogs"):
@@ -126,8 +126,9 @@ async def load():
 @bot.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
 @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 async def roll(ctx, *, choices: str):
+    clean_choices = escape_mentions(escape_markdown(choices))
     # choices is a string like "apple, banana, orange"
-    items = [item.strip() for item in choices.split(',')]
+    items = [item.strip() for item in clean_choices.split(',')]
     if not items:
         await ctx.send("No valid options provided.")
         return
