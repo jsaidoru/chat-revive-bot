@@ -19,7 +19,6 @@ def is_safe_ast(code: str) -> Tuple[bool, str]:
         ast.Raise: "`raise` is not allowed.",
         ast.Global: "`global` is not allowed.",
         ast.Nonlocal: "`nonlocal` is not allowed.",
-        ast.Exec: "`exec` is not allowed.",
     }
 
     forbidden_names = {"eval", "exec", "__import__", "open", "compile", "input"}

@@ -139,9 +139,10 @@ async def reviv(ctx):
     await ctx.send(rand.choice(messages))
 
 
-@bot.command()
+@bot.command("Execute Python codes")
 @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
+    await ctx.send("This command might be removed from the future")
     is_safe, reason = is_safe_ast(code)
     if not is_safe:
         return await ctx.send(f"❌ Unsafe code blocked: {reason}")
