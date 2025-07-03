@@ -25,6 +25,7 @@ class Random(commands.Cog):
             return
         if length <= 0:
             await ctx.send("what the fuck stop")
+            return
         random_string = ''.join(rand.choice(characters) for _ in range(length))
         await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
