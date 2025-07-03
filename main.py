@@ -149,6 +149,8 @@ safe_globals = {
 @commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
     result = exec(code, safe_globals)
+    await ctx.send("This command might be removed due to security issue.")
+    await ctx.send(result)
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
     async with bot:
