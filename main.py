@@ -23,7 +23,7 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     if message.author.id == 1368120467147325491:
-        message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
+        await message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
     content = message.content
     if f"<@{bot.user.id}>" in content:
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
