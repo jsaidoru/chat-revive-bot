@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 import asyncio
 import math
+import io
+import contextlib
 load_dotenv()
 
 
@@ -136,58 +138,48 @@ async def reviv(ctx):
     ]
     await ctx.send(rand.choice(messages))
 
-safe_builtins = {
-    # Types
-    "int": int,
-    "float": float,
-    "str": str,
-    "bool": bool,
-    "list": list,
-    "dict": dict,
-    "set": set,
-    "tuple": tuple,
-    "range": range,
-    "enumerate": enumerate,
-    "zip": zip,
-
-    # Math
-    "abs": abs,
-    "min": min,
-    "max": max,
-    "sum": sum,
-    "round": round,
-    "pow": pow,
-
-    # Logic
-    "all": all,
-    "any": any,
-
-    # Iteration helpers
-    "len": len,
-    "sorted": sorted,
-    "reversed": reversed,
-
-    # Print (optional)
-    "print": print,
-}
-
-safe_globals = {
-    "__builtins__": safe_builtins,
-    "math": math
-}
-
 @bot.command()
-@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
+    safe_builtins = {
+        "abs": abs,
+        "max": max,
+        "min": min,
+        "sum": sum,
+        "range": range,
+        "len": len,
+        "print": print,
+        "int": int,
+        "float": float,
+        "str": str,
+        "bool": bool,
+    }
+
+    safe_globals = {
+        "__builtins__": safe_builtins,
+        "math": math
+    }
+
     context = {}
-    
+
+    # 👇 Capture print output
+    buffer = io.StringIO()
     try:
-        exec(code, safe_globals, context)
-        result = context.get("result", "✅ Code executed, no result.")
+        with contextlib.redirect_stdout(buffer):
+            exec(code, safe_globals, context)
+
+        # First check for result variable
+        if "result" in context:
+            result = context["result"]
+        else:
+            output = buffer.getvalue().strip()
+            result = output if output else "✅ Code ran, but no output."
+
     except Exception as e:
         result = f"❌ Error: {e}"
 
-    await ctx.send(str(result))
+    await ctx.send(str(result)[:1900])  # Discord message limit safety
+
 
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
