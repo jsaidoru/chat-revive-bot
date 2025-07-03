@@ -75,7 +75,7 @@ class Suggest(commands.Cog):
         await owner.send(
             f"Feedback from {ctx.author}:\n> {clean_feedback}"
         )
-    @suggest.command(name = "command", help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
+    @suggest.command(name = "cmd", help = "Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def suggest_command(self, ctx, *, suggestion: str):
         clean_suggestion = escape_mentions(escape_markdown(suggestion))
