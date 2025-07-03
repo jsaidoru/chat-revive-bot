@@ -5,6 +5,7 @@ import random as rand
 import os
 from dotenv import load_dotenv
 import asyncio
+import math
 load_dotenv()
 
 
@@ -136,21 +137,58 @@ async def reviv(ctx):
     await ctx.send(rand.choice(messages))
 
 safe_builtins = {
-    "print": print,
+    # Types
+    "int": int,
+    "float": float,
+    "str": str,
+    "bool": bool,
+    "list": list,
+    "dict": dict,
+    "set": set,
+    "tuple": tuple,
     "range": range,
-    "len": len
+    "enumerate": enumerate,
+    "zip": zip,
+
+    # Math
+    "abs": abs,
+    "min": min,
+    "max": max,
+    "sum": sum,
+    "round": round,
+    "pow": pow,
+
+    # Logic
+    "all": all,
+    "any": any,
+
+    # Iteration helpers
+    "len": len,
+    "sorted": sorted,
+    "reversed": reversed,
+
+    # Print (optional)
+    "print": print,
 }
 
 safe_globals = {
-    "__builtins__": safe_builtins
+    "__builtins__": safe_builtins,
+    "math": math
 }
 
 @bot.command()
-@commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
-    result = exec(code, safe_globals)
-    await ctx.send("This command might be removed due to security issue.")
-    await ctx.send(result)
+    context = {}
+    
+    try:
+        exec(code, safe_globals, context)
+        result = context.get("result", "✅ Code executed, no result.")
+    except Exception as e:
+        result = f"❌ Error: {e}"
+
+    await ctx.send(str(result))
+
 TOKEN = os.environ.get('BOT_TOKEN')
 async def main():
     async with bot:
