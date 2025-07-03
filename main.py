@@ -8,6 +8,7 @@ import asyncio
 import asyncio
 import textwrap
 from is_safe_code import is_safe_ast
+
 load_dotenv()
 
 
@@ -16,9 +17,10 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
-bot = commands.Bot(command_prefix='>', intents=intents)
+bot = commands.Bot(command_prefix=">", intents=intents)
 BOT_OWNER_ID = 1085862271399493732
 pending_suggestions = {}  # Stores user who suggested
+
 
 # === BOT EVENTS ===
 @bot.event
@@ -28,7 +30,9 @@ async def on_message(message):
     content = message.content
     if f"<@{bot.user.id}>" in content:
         if message.author.id == 1368120467147325491:
-            await message.channel.send("To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages.")
+            await message.channel.send(
+                "To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages."
+            )
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
 """
@@ -37,8 +41,10 @@ Type `>help` to see my commands.
         await message.channel.send("and both is better than you")
     if "HEY" in content:
         i = rand.randint(0, 10)
-        if i == 5: await message.channel.send("BAHAHAHA")
-    await bot.process_commands(message) # IMPORTANT!1!!11!
+        if i == 5:
+            await message.channel.send("BAHAHAHA")
+    await bot.process_commands(message)  # IMPORTANT!1!!11!
+
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -47,77 +53,16 @@ async def on_command_error(ctx, error):
     else:
         await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
 
+
 # Remove default help
 
-bot.remove_command('help')
+bot.remove_command("help")
 
-# Recursive function to get command and its subcommands
-def get_all_commands(cmd: commands.Command, parent=""):
-    cmds = []
-    qualified_name = f"{parent} {cmd.name}".strip()
-    if isinstance(cmd, commands.Group):
-        cmds.append((qualified_name, cmd.help))
-        for sub in cmd.commands:
-            cmds.extend(get_all_commands(sub, qualified_name))
-    else:
-        cmds.append((qualified_name, cmd.help))
-    return cmds
 
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-@bot.command(name="help")
-async def custom_help(ctx, *, command_name: str = None):
-    embed = discord.Embed(
-        color=discord.Color.blurple()
-    )
 
-    if command_name is None:
-        # No args → show all commands grouped by cog
-        embed.title = "📘 Help Menu"
-        embed.description = "Use `>help <command>` for more details."
-
-        cog_commands = {}
-
-        for cmd in bot.commands:
-            if cmd.hidden:
-                continue
-            try:
-                if not await cmd.can_run(ctx):
-                    continue
-            except commands.CommandError:
-                continue
-
-            cog = cmd.cog_name or "Uncategorized"
-            cog_commands.setdefault(cog, []).append(cmd)
-
-        for cog, commands_list in cog_commands.items():
-            value = ""
-            for cmd in commands_list:
-                if isinstance(cmd, commands.Group):
-                    value += f"• `>{cmd.name}` (group)\n"
-                else:
-                    value += f"• `>{cmd.name}`\n"
-
-            embed.add_field(name=f"📂 {cog}", value=value or "No commands.", inline=False)
-        await ctx.send(embed=embed)
-    else:
-        # User typed: >help revive, >help random
-        cmd = bot.get_command(command_name)
-        if cmd is None:
-            await ctx.send(f"❌ Command `{command_name}` not found.")
-            return
-
-        embed.title = f"❓ Help: `{cmd.qualified_name}`"
-        embed.description = cmd.help or "No description provided."
-
-        if isinstance(cmd, commands.Group) and cmd.commands:
-            value = ""
-            for sub in cmd.commands:
-                value += f"• `>{cmd.name} {sub.name}` - {sub.help or 'No description'}\n"
-            embed.add_field(name="Subcommands", value=value, inline=False)
-
-        await ctx.send(embed=embed)
 
 async def load():
     for filename in os.listdir("./cogs"):
@@ -125,18 +70,9 @@ async def load():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 
-@bot.command(help = "dont")
-async def pingeveryone(ctx):
-    await ctx.send("what are you trying to do")
+safe_builtins = {"print": print, "range": range, "len": len}
 
-@bot.command(help = "typo?")
-async def reviv(ctx):
-    messages = [
-        """What the fuck, reviv? What's that you just said? About making typos and forgetting the letter "e"?""",
-        "Did you mean revive kiddo?",
-        "Reviv or surviv? You better not to mention about that guy."
-    ]
-    await ctx.send(rand.choice(messages))
+safe_globals = {"__builtins__": safe_builtins}
 
 
 @bot.command("Execute Python codes")
@@ -150,14 +86,16 @@ async def execute(ctx, *, code: str):
 
     try:
         proc = await asyncio.create_subprocess_exec(
-            "python", "sandbox.py",
+            "python",
+            "sandbox.py",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
 
         stdout, stderr = await asyncio.wait_for(
-            proc.communicate(code.encode()), timeout=3  # ⏱️ 3-second timeout
+            proc.communicate(code.encode()),
+            timeout=3,  # ⏱️ 3-second timeout
         )
 
         output = stdout.decode().strip()
@@ -168,16 +106,24 @@ async def execute(ctx, *, code: str):
         output = "❌ Timeout: Your code ran too long."
     except Exception as e:
         output = f"❌ Execution error: {e}"
-    
+
     clean_output = escape_markdown(escape_mentions(output[:500]))
     if any(x in clean_output for x in ["@everyone", "@here", "<@&", "<@"]):
         await ctx.send("❌ What do you think you are trying to do?.")
         return
-    await ctx.send(f"First 500 characters of the result: \n {clean_output}", allowed_mentions=discord.AllowedMentions.none())
+    await ctx.send(
+        f"First 500 characters of the result: \n {clean_output}",
+        allowed_mentions=discord.AllowedMentions.none(),
+    )
 
-TOKEN = os.environ.get('BOT_TOKEN')
+
+TOKEN = os.environ.get("BOT_TOKEN")
+
+
 async def main():
     async with bot:
         await load()
         await bot.start(TOKEN)
+
+
 asyncio.run(main())
