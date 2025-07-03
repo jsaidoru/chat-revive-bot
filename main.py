@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
+from discord.utils import escape_markdown, escape_mentions
 import random as rand
 import os
 from dotenv import load_dotenv
 import asyncio
-from discord.utils import escape_markdown, escape_mentions
 load_dotenv()
 
 
