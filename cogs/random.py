@@ -26,6 +26,8 @@ class Random(commands.Cog):
         if length <= 0:
             await ctx.send("what the fuck stop")
             return
+        if length > 700:
+            await ctx.send("⚠️ Please don't generate long strings")
         random_string = ''.join(rand.choice(characters) for _ in range(length))
         await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
