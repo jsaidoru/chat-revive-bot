@@ -65,7 +65,7 @@ class Random(commands.Cog):
             
         await ctx.send(f"<@{ctx.author.id}>", embed=embed)
     @random.command(help = "Randomly pick an option from the choices, separate each choices with a comma")
-    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
     async def roll(self, ctx, *, choices: str):
         clean_choices = escape_mentions(escape_markdown(choices))
         # choices is a string like "apple, banana, orange"
