@@ -20,9 +20,11 @@ class Random(commands.Cog):
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
     async def string(self, ctx, *, length: int):
         characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if length < 2 or length > 64:
-            await ctx.send("❌ Length must be between 2 and 64 characters.")
+        if length > 1958:
+            await ctx.send("❌ String length must be 1958 characters max.")
             return
+        if length <= 0:
+            await ctx.send("what the fuck stop")
         random_string = ''.join(rand.choice(characters) for _ in range(length))
         await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
