@@ -76,7 +76,7 @@ class Random(commands.Cog):
         choice = rand.choice(items)
         await ctx.send(f"You rolled: **{choice}**")
 
-    @random.command(help = "Generate a random fun fact")
+    @random.command(help = "Generate a random news ticker")
     async def newsticker(self, ctx):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
