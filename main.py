@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import escape_markdown, escape_mentions
 import random as rand
 import os
 from dotenv import load_dotenv
@@ -49,7 +50,16 @@ async def on_command_error(ctx, error):
     else:
         await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
 
-
+@commands.command(help="Randomly pick an option from the choices, separate each choices with a comma")
+@commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
+async def roll(ctx, *, choices: str):
+    clean_choices = escape_mentions(escape_markdown(choices))
+    items = [item.strip() for item in clean_choices.split(",")]
+    if not items:
+        await ctx.send("No valid options provided.")
+        return
+    choice = rand.choice(items)
+    await ctx.send(f"You rolled: **{choice}**")
 # Remove default help
 
 bot.remove_command("help")

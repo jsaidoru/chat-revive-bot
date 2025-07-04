@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.utils import escape_markdown, escape_mentions
 import random as rand
 from randomfen import random_fen
 
@@ -9,7 +8,7 @@ class Random(commands.Cog):
     @commands.group()
     async def random(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send("🎲 RNG stuff goes here! `>help random` for more info!")
+            await ctx.send("🎲 RNG stuff goes here! `>help random` for more info! You can also use >roll (no subcommands)")
 
     @random.command(help="Generate a random chess FEN.\n")
     @commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
@@ -68,20 +67,6 @@ class Random(commands.Cog):
         )
 
         await ctx.send(f"<@{ctx.author.id}>", embed=embed)
-
-    @random.command(
-        help="Randomly pick an option from the choices, separate each choices with a comma"
-    )
-    @commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
-    async def roll(self, ctx, *, choices: str):
-        clean_choices = escape_mentions(escape_markdown(choices))
-        # choices is a string like "apple, banana, orange"
-        items = [item.strip() for item in clean_choices.split(",")]
-        if not items:
-            await ctx.send("No valid options provided.")
-            return
-        choice = rand.choice(items)
-        await ctx.send(f"You rolled: **{choice}**")
 
     @random.command(help="Generate a random news ticker")
     async def newsticker(self, ctx):
