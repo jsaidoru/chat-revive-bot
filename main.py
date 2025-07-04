@@ -98,7 +98,8 @@ async def youcanonlyusethisonceinyourlife(ctx):
     record = cooldown_db.get(User.user_id == user_id)
     if record and now < record["cooldown_until"]:
         remaining = record["cooldown_until"] - now
-        return await ctx.send(f"⏳ Wait {hhmmss(remaining)} more years :3")
+        year = remaining / 31556926
+        return await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.3f}) :3")
 
     # Set new cooldown
     cooldown_db.upsert(
