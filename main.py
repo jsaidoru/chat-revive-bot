@@ -51,17 +51,6 @@ async def on_command_error(ctx, error):
         await ctx.send("❌ That command doesn't exist.")
     else:
         await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
-
-@commands.command(help="Randomly pick an option from the choices, separate each choices with a comma")
-@commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
-async def roll(ctx, *, choices: str):
-    clean_choices = escape_mentions(escape_markdown(choices))
-    items = [item.strip() for item in clean_choices.split(",")]
-    if not items:
-        await ctx.send("No valid options provided.")
-        return
-    choice = rand.choice(items)
-    await ctx.send(f"You rolled: **{choice}**")
 # Remove default help
 
 bot.remove_command("help")
@@ -101,6 +90,16 @@ async def youcanonlyusethisonceinyourlife(ctx):
 
     await ctx.send("✅ You used this command! See you in 68 years.")
 
+@bot.command(help="Randomly pick an option from the choices, separate each choices with a comma")
+@commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
+async def roll(ctx, *, choices: str):
+    clean_choices = escape_mentions(escape_markdown(choices))
+    items = [item.strip() for item in clean_choices.split(",")]
+    if not items:
+        await ctx.send("No valid options provided.")
+        return
+    choice = rand.choice(items)
+    await ctx.send(f"You rolled: **{choice}**")
 async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
