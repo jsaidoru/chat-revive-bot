@@ -3,8 +3,6 @@ from discord.ext import commands
 from discord.utils import escape_markdown, escape_mentions
 import random as rand
 import os
-import json
-import time
 from dotenv import load_dotenv
 import asyncio
 
@@ -49,6 +47,8 @@ async def on_command_error(ctx, error):
         await ctx.send("❌ That command doesn't exist.")
     else:
         await ctx.send(f"⚠️ An error occurred: `{str(error)}`")
+
+
 # Remove default help
 
 bot.remove_command("help")
@@ -58,41 +58,17 @@ bot.remove_command("help")
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
-COOLDOWN_FILE = "cooldowns.json"
 
-# Load or initialize cooldown file
-if os.path.exists(COOLDOWN_FILE):
-    with open(COOLDOWN_FILE, "r") as f:
-        cooldowns = json.load(f)
-else:
-    cooldowns = {}
 
-def save_cooldowns():
-    with open(COOLDOWN_FILE, "w") as f:
-        json.dump(cooldowns, f)
-
-@bot.command()
-async def youcanonlyusethisonceinyourlife(ctx):
-    user_id = str(ctx.author.id)
-    now = int(time.time())
-    lifetime = 2147483647
-
-    if user_id in cooldowns and now < cooldowns[user_id]:
-        remaining = cooldowns[user_id] - now
-        years = remaining // 31536000
-        return await ctx.send(f"⏳ Wait {years} more years :3")
-
-    # Set cooldown
-    cooldowns[user_id] = now + lifetime
-    save_cooldowns()
-
-    await ctx.send("✅ You used this command! See you in 68 years.")
-
-@bot.command(help="Randomly pick an option from the choices, separate each choices with a comma")
+@bot.command(
+    help="Randomly pick an option from the choices, separate each choices with a comma"
+)
 @commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
 async def roll(ctx, *, choices: str):
     if "ping " in choices.lower():
-        await ctx.send("Please don't randomly pick who to ping. I don't want anyone to blame my bot.")
+        await ctx.send(
+            "Please don't randomly pick who to ping. I don't want anyone to blame my bot."
+        )
     clean_choices = escape_mentions(escape_markdown(choices))
     items = [item.strip() for item in clean_choices.split(",")]
     if not items:
@@ -100,6 +76,7 @@ async def roll(ctx, *, choices: str):
         return
     choice = rand.choice(items)
     await ctx.send(f"You rolled: **{choice}**")
+
 
 async def load():
     for filename in os.listdir("./cogs"):
