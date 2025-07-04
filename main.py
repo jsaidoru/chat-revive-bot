@@ -3,6 +3,8 @@ from discord.ext import commands
 from discord.utils import escape_markdown, escape_mentions
 import random as rand
 import os
+import json
+import time
 from dotenv import load_dotenv
 import asyncio
 
@@ -69,6 +71,35 @@ bot.remove_command("help")
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
+COOLDOWN_FILE = "cooldowns.json"
+
+# Load or initialize cooldown file
+if os.path.exists(COOLDOWN_FILE):
+    with open(COOLDOWN_FILE, "r") as f:
+        cooldowns = json.load(f)
+else:
+    cooldowns = {}
+
+def save_cooldowns():
+    with open(COOLDOWN_FILE, "w") as f:
+        json.dump(cooldowns, f)
+
+@bot.command()
+async def youcanonlyusethisonceinyourlife(ctx):
+    user_id = str(ctx.author.id)
+    now = int(time.time())
+    lifetime = 2147483647
+
+    if user_id in cooldowns and now < cooldowns[user_id]:
+        remaining = cooldowns[user_id] - now
+        years = remaining // 31536000
+        return await ctx.send(f"⏳ Wait {years} more years :3")
+
+    # Set cooldown
+    cooldowns[user_id] = now + lifetime
+    save_cooldowns()
+
+    await ctx.send("✅ You used this command! See you in 68 years.")
 
 async def load():
     for filename in os.listdir("./cogs"):
