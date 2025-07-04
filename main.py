@@ -37,8 +37,9 @@ async def on_message(message):
 Type `>help` to see my commands.
 """
         await message.channel.send(response)
-    if message.count("|") >= 50:
+    if message.content.count("|") >= 50:
         await message.channel.send("dont abuse discord bugs")
+        return
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
