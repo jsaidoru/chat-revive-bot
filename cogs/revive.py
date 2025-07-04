@@ -43,7 +43,7 @@ class Revive(commands.Cog):
         )
 
     @revive.command(help="Only picks a random question instead of pinging")
-    @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def withoutping(self, ctx):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
