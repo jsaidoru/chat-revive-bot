@@ -32,6 +32,7 @@ async def on_message(message):
             await message.channel.send(
                 "To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages."
             )
+            return
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
 """
