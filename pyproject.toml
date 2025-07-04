@@ -30,6 +30,7 @@ dependencies = [
   "setuptools==80.9.0",
   "soupsieve==2.7",
   "threadpoolctl==3.6.0",
+  "tinydb>=4.8.2",
   "typing_extensions==4.14.0",
   "urllib3==2.5.0",
   "yarl==1.20.1",
