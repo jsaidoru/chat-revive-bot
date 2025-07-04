@@ -31,7 +31,7 @@ class Execute(commands.Cog):
             await ctx.send("❌ You are not trusted to use this command.")
             return
         owner = await self.bot.fetch_user(BOT_OWNER_ID)
-        await owner.send(f"Code from >execute by {ctx.author}:\n {code}.")
+        await owner.send(f"Code from >execute by {ctx.author}:\n {code}")
         is_safe, reason = is_safe_ast(code)
         if not is_safe:
             return await ctx.send(f"❌ Unsafe code blocked: {reason}")
@@ -61,8 +61,9 @@ class Execute(commands.Cog):
             output = f"❌ Execution error: {e}"
 
         clean_output = escape_markdown(escape_mentions(output[:333]))
-        if any(x in clean_output for x in ["@everyone", "@here", "<@&", "<@"]):
-            await ctx.send("❌ What do you think you are trying to do?.")
+        # a bit of hardcoding lol
+        if any(x in clean_output for x in ["@everyone", "@here", "<@&", "<@", "getattr", "__builtins__", "__import__", "eval", "exec", "globals", "locals", "compile", "eval"]):
+            await ctx.send("❌ What do you think you are trying to do?")
             return
         await ctx.send(
             f"First 333 characters of the result: \n {clean_output}",

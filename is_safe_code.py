@@ -10,8 +10,6 @@ def is_safe_ast(code: str) -> Tuple[bool, str]:
         return False, f"Syntax error: {e}"
 
     forbidden_nodes = {
-        ast.FunctionDef: "Function definitions are not allowed.",
-        ast.Lambda: "Lambdas are not allowed.",
         ast.ClassDef: "Class definitions are not allowed.",
         ast.Import: "Import statements are not allowed.",
         ast.ImportFrom: "Being clever?",
