@@ -36,12 +36,8 @@ async def on_message(message):
 Type `>help` to see my commands.
 """
         await message.channel.send(response)
-    if ">chatrevivalbot" in content.replace(" ", "").lower():
-        await message.channel.send("and both is better than you")
-    if "HEY" in content:
-        i = rand.randint(0, 10)
-        if i == 5:
-            await message.channel.send("BAHAHAHA")
+    if message.count("|") >= 50:
+        await message.channel.send("dont abuse discord bugs")
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
