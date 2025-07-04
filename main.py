@@ -99,7 +99,9 @@ async def youcanonlyusethisonceinyourlife(ctx):
     if record and now < record["cooldown_until"]:
         remaining = record["cooldown_until"] - now
         year = remaining / 31556926
-        return await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.3f} years) :3")
+        await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.6f} years) :3")
+    else:
+        await ctx.send(f"<@{ctx.author.id}>\n🎉 Congrats, you can use this command again. Thank for using Chat Revival Bot!")
 
     # Set new cooldown
     cooldown_db.upsert(
