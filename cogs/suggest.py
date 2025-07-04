@@ -12,10 +12,10 @@ class Suggest(commands.Cog):
     @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
     async def suggest(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send("Suggest your ideas! Use `>help suggest` for more info")
+            await ctx.send("🧠 Suggest your ideas! Use `>help suggest` for more info")
 
     @suggest.command(
-        help="Suggest a question to be added to the question list. Don't worry about credits.\n"
+        help="Suggest a question to be added to the question list.\n"
     )
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def question(self, ctx, *, suggestion: str):
