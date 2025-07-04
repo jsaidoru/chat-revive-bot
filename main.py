@@ -100,6 +100,7 @@ async def youcanonlyusethisonceinyourlife(ctx):
         remaining = record["cooldown_until"] - now
         year = remaining / 31556926
         await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.6f} years) :3")
+        return
     else:
         await ctx.send(f"<@{ctx.author.id}>\n🎉 Congrats, you can use this command again. Thank for using Chat Revival Bot!")
 
