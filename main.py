@@ -93,6 +93,8 @@ async def youcanonlyusethisonceinyourlife(ctx):
 @bot.command(help="Randomly pick an option from the choices, separate each choices with a comma")
 @commands.cooldown(rate=1, per=1, type=commands.BucketType.user)
 async def roll(ctx, *, choices: str):
+    if "ping " in choices.lower():
+        await ctx.send("Please don't randomly pick who to ping. I don't want anyone to blame my bot.")
     clean_choices = escape_mentions(escape_markdown(choices))
     items = [item.strip() for item in clean_choices.split(",")]
     if not items:
@@ -100,6 +102,7 @@ async def roll(ctx, *, choices: str):
         return
     choice = rand.choice(items)
     await ctx.send(f"You rolled: **{choice}**")
+
 async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
