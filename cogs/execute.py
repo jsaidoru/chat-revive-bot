@@ -19,11 +19,12 @@ def load_trusted_ids() -> set[int]:
 trusted_ids = load_trusted_ids()
 def is_trusted(user: discord.User | discord.Member) -> bool:
     return user.id in trusted_ids
+
 class Execute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command("Execute Python codes. Codes will be sent to jsaidoru for review.")
+    @commands.command(help="Execute Python codes. Codes will be sent to jsaidoru for review.")
     @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def execute(self, ctx, *, code: str):
         if not is_trusted(ctx.author):
