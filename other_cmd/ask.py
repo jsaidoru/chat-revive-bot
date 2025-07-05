@@ -8,7 +8,7 @@ load_dotenv()
 APP_ID = os.environ.get("APP_ID")
 client = wolframalpha.Client(APP_ID)
 
-print("Loaded APP_ID:", APP_ID)
+print("APP_ID =", os.environ.get("APP_ID"))
 @commands.command()
 async def ask(ctx, *, query: str):
     try:
