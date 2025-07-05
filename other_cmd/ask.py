@@ -11,11 +11,13 @@ client = wolframalpha.Client(APP_ID)
 @commands.command()
 async def ask(ctx, *, query: str):
     try:
-        res = await asyncio.to_thread(client.query, query)  # Run blocking code in a thread
-        answer = next(res.results).text
+        res = await asyncio.to_thread(client.query, query)
+        results = list(res.results)
+        if not results:
+            await ctx.send("❌ No answer found.")
+            return
+        answer = results[0].text
         await ctx.send(f"**Result:** {answer}")
-    except StopIteration:
-        await ctx.send("❌ No results found.")
     except Exception as e:
-        print("WolframAlpha error:", e)
         await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
+        print("Error details:", type(e).__name__, e)
