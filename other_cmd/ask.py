@@ -3,7 +3,8 @@ import asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
-load_dotenv()
+from pathlib import Path
+load_dotenv(dotenv_path=Path("..") / ".env")
 
 APP_ID = os.environ.get("APP_ID")
 client = wolframalpha.Client(APP_ID)
