@@ -1,15 +1,11 @@
 import wolframalpha
 import asyncio
 from discord.ext import commands
-from dotenv import load_dotenv
-import os
-from pathlib import Path
-load_dotenv(dotenv_path=Path("..") / ".env")
+from secrets import APP_ID
 
-APP_ID = os.environ.get("APP_ID")
 client = wolframalpha.Client(APP_ID)
 
-print("APP_ID =", os.environ.get("APP_ID"))
+print("APP_ID =", APP_ID)
 @commands.command()
 async def ask(ctx, *, query: str):
     try:
