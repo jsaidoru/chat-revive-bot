@@ -1,7 +1,7 @@
 import wolframalpha
 import asyncio
 from discord.ext import commands
-from secrets import APP_ID
+from configs import APP_ID
 
 client = wolframalpha.Client(APP_ID)
 
