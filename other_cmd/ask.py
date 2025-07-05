@@ -17,4 +17,5 @@ async def ask(ctx, *, query: str):
     except StopIteration:
         await ctx.send("❌ No results found.")
     except Exception as e:
-        await ctx.send(f"⚠️ Error: {e}")
+        print("WolframAlpha error:", e)
+        await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
