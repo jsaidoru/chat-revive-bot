@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import roll, help, youcanonlyusethisonceinyourlife
+from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask
 
 
 load_dotenv()
@@ -56,6 +56,8 @@ bot.remove_command("help")
 bot.add_command(roll.roll)
 bot.add_command(youcanonlyusethisonceinyourlife.youcanonlyusethisonceinyourlife)
 bot.add_command(help.help)
+bot.add_command(pingeveryone.pingeveryone)
+bot.add_command(ask.ask)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
