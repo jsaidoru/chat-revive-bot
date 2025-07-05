@@ -1,4 +1,4 @@
 # .gitignore
 .env
-other_cmd/secrets.py
+other_cmd/configs.py
 __pycache__/
