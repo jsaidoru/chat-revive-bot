@@ -3,9 +3,8 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-import other_cmd.roll
-import other_cmd.youcanonlyusethisonceinyourlife
-import other_cmd.help
+from other_cmd import roll, help, youcanonlyusethisonceinyourlife
+
 
 load_dotenv()
 
@@ -54,9 +53,9 @@ async def load():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 bot.remove_command("help")
 
-bot.add_command(other_cmd.roll)
-bot.add_command(other_cmd.youcanonlyusethisonceinyourlife)
-bot.add_command(other_cmd.help)
+bot.add_command(roll.roll)
+bot.add_command(youcanonlyusethisonceinyourlife.youcanonlyusethisonceinyourlife)
+bot.add_command(help.help)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
