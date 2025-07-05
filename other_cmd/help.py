@@ -13,7 +13,7 @@ def get_all_commands(self, cmd: commands.Command, parent=""):
     return cmds
 
 @commands.command(name="help")
-async def help(self, ctx, *, command_name: str = None):
+async def help(ctx, *, command_name: str = None):
     embed = discord.Embed(color=discord.Color.blurple())
 
     if command_name is None:
@@ -23,7 +23,7 @@ async def help(self, ctx, *, command_name: str = None):
 
         cog_commands = {}
 
-        for cmd in self.bot.commands:
+        for cmd in ctx.bot.commands:
             if cmd.hidden:
                 continue
             try:
@@ -48,7 +48,7 @@ async def help(self, ctx, *, command_name: str = None):
             )
         await ctx.send(embed=embed)
     else:
-        cmd = self.bot.get_command(command_name)
+        cmd = ctx.bot.get_command(command_name)
         if cmd is None:
             await ctx.send(f"❌ Command `{command_name}` not found.")
             return
