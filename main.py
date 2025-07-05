@@ -3,8 +3,8 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask
-
+from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone
+import wolframalpha
 
 load_dotenv()
 print("DEBUG: cwd =", os.getcwd())
@@ -53,13 +53,30 @@ async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
+
+APP_ID = os.environ.get("APP_ID")
+client = wolframalpha.Client(APP_ID)
+
+print("APP_ID =", APP_ID)
+@bot.command()
+async def ask(ctx, *, query: str):
+    try:
+        res = await asyncio.to_thread(client.query, query)
+        results = list(res.results)
+        if not results:
+            await ctx.send("❌ No answer found.")
+            return
+        answer = results[0].text
+        await ctx.send(f"**Result:** {answer}")
+    except Exception as e:
+        await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
+        print("Error details:", type(e).__name__, e)
 bot.remove_command("help")
 
 bot.add_command(roll.roll)
 bot.add_command(youcanonlyusethisonceinyourlife.youcanonlyusethisonceinyourlife)
 bot.add_command(help.help)
 bot.add_command(pingeveryone.pingeveryone)
-bot.add_command(ask.ask)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
