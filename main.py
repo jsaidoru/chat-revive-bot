@@ -7,6 +7,8 @@ from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone,
 
 
 load_dotenv()
+print("DEBUG: cwd =", os.getcwd())
+print("DEBUG: files =", os.listdir())
 
 intents = discord.Intents.default()
 intents.message_content = True
