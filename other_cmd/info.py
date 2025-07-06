@@ -2,7 +2,7 @@ from discord.ext import commands
 import wikipedia
 @commands.command()
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def wiki(ctx, *, query: str):
+async def info(ctx, *, query: str):
     try:
         wikipedia.set_lang("en")  # Make sure it's in English
         try:
