@@ -7,7 +7,7 @@ from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone
 import requests
 
 load_dotenv(dotenv_path=".env")
-print(os.environ)
+print(dict(os.environ))
 
 intents = discord.Intents.default()
 intents.message_content = True
