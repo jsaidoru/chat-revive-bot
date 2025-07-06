@@ -70,11 +70,20 @@ async def ask(ctx, *, query: str):
 
     try:
         resp = requests.get(url, params=params)
-        data = resp.json()
+        
+        # Debug: print raw response
+        print("Status:", resp.status_code)
+        print("Raw response:", resp.text[:500])  # limit to 500 chars for sanity
+
+        data = resp.json()  # this line fails if response isn't JSON
+
+        if "queryresult" not in data:
+            await ctx.send("⚠️ API error: `queryresult` missing.")
+            return
 
         pods = data["queryresult"].get("pods", [])
         if not pods:
-            await ctx.send("❌ No answer found.")
+            await ctx.send("❌ No results found.")
             return
 
         for pod in pods:
@@ -83,10 +92,12 @@ async def ask(ctx, *, query: str):
                 await ctx.send(f"**Result:** {text}")
                 return
 
-        # Fallback
-        await ctx.send(f"ℹ️ Top result: {pods[0]['subpods'][0]['plaintext']}")
+        await ctx.send(f"ℹ️First pod: {pods[0]['subpods'][0]['plaintext']}")
+
     except Exception as e:
         await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
+        import traceback
+        print(traceback.format_exc())
 
 bot.remove_command("help")
 
