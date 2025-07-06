@@ -28,7 +28,7 @@ async def ask(ctx, *, query: str):
 
         # Confirm 'queryresult' is present and successful
         if not data.get("queryresult", {}).get("success", False):
-            await ctx.send("❌ WolframAlpha couldn't understand the query.")
+            await ctx.send(f"<@{ctx.author.id}>\n❌ WolframAlpha couldn't understand the query.")
             return
 
         pods = data["queryresult"].get("pods", [])
@@ -40,7 +40,7 @@ async def ask(ctx, *, query: str):
         for pod in pods:
             if pod.get("title", "").lower() == "result":
                 text = pod["subpods"][0].get("plaintext", "No result text.")
-                await ctx.send(f"**Result:** {text}")
+                await ctx.send(f"<@{ctx.author.id}>\n**Result:** {text}")
                 return
 
         # Fallback: send first pod with plaintext
@@ -50,7 +50,7 @@ async def ask(ctx, *, query: str):
                     await ctx.send(f"<@{ctx.author.id}>\n{pod['title']}: {subpod['plaintext']}")
                     return
 
-        await ctx.send("❓ No useful information found.")
+        await ctx.send(f"<@{ctx.author.id}>\n❓ No useful information found.")
 
     except Exception as e:
         import traceback
