@@ -55,7 +55,9 @@ async def load():
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
-print("ENV loaded:", os.environ.get("APP_ID"))  # Should print your App ID
+if os.environ.get("APP_ID") is None:
+    load_dotenv()
+
 @bot.command()
 async def ask(ctx, *, query: str):
     app_id = os.environ.get("APP_ID")
