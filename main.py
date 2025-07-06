@@ -6,7 +6,7 @@ import asyncio
 from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone
 import requests
 
-load_dotenv()
+load_dotenv(dotenv_path="/app/.env")
 
 print("DEBUG: cwd =", os.getcwd())
 print("DEBUG: files =", os.listdir())
