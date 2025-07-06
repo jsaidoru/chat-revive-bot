@@ -8,7 +8,8 @@ if os.environ.get("WOLFRAM_APP_ID") is None:
 
 wolfram_app_id = os.environ.get("WOLFRAM_APP_ID")
 
-@commands.command(help="Ask WolframAlpha. Might take 1-2 seconds to compute.")
+@commands.command(help="Ask WolframAlpha. It might takes 1-3 seconds to compute, especially advanced maths like integrals and derivatives.")
+@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 async def ask(ctx, *, query: str):
     if not wolfram_app_id:
         await ctx.send("❌ WOLFRAM_APP_ID not set.")
@@ -46,7 +47,7 @@ async def ask(ctx, *, query: str):
         for pod in pods:
             for subpod in pod.get("subpods", []):
                 if subpod.get("plaintext"):
-                    await ctx.send(f"ℹ️ {pod['title']}: {subpod['plaintext']}")
+                    await ctx.send(f"{pod['title']}: {subpod['plaintext']}")
                     return
 
         await ctx.send("❓ No useful information found.")
