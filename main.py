@@ -55,7 +55,7 @@ async def load():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 APP_ID = os.environ.get("APP_ID")
-client = wolframalpha.Client(APP_ID)
+client = wolframalpha.Client("ERGYA3-7TX7YEAQ24")
 
 print("APP_ID =", APP_ID)
 @bot.command()
