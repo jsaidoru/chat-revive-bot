@@ -56,18 +56,18 @@ async def load():
 if os.environ.get("WOLFRAM_APP_ID") is None:
     load_dotenv()
 
-app_id = os.environ.get("WOLFRAM_APP_ID")
+wolfram_app_id = os.environ.get("WOLFRAM_APP_ID")
 
 @bot.command()
 async def ask(ctx, *, query: str):
-    if not app_id:
-        await ctx.send("❌ APP_ID not set.")
+    if not wolfram_app_id:
+        await ctx.send("❌ WOLFRAM_APP_ID not set.")
         return
 
     url = "https://api.wolframalpha.com/v2/query"
     params = {
         "input": query,
-        "appid": app_id,
+        "appid": wolfram_app_id,
         "output": "JSON"
     }
 
