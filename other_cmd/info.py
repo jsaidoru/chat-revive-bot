@@ -2,7 +2,7 @@ from discord.ext import commands
 import wikipedia
 @commands.command()
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def wiki(ctx, *, query: str):
+async def info(ctx, *, query: str):
     try:
         summary = wikipedia.summary(query, sentences=2, auto_suggest=True)
         await ctx.send(f"📚 **{query.title()}**\n{summary}")
