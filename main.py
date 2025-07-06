@@ -58,9 +58,16 @@ async def load():
 if os.environ.get("APP_ID") is None:
     load_dotenv()
 
+load_dotenv()
+
+app_id = os.environ.get("APP_ID")
+
 @bot.command()
 async def ask(ctx, *, query: str):
-    app_id = os.environ.get("APP_ID")
+    if not app_id:
+        await ctx.send("❌ APP_ID not set.")
+        return
+
     url = "https://api.wolframalpha.com/v2/query"
     params = {
         "input": query,
@@ -70,34 +77,39 @@ async def ask(ctx, *, query: str):
 
     try:
         resp = requests.get(url, params=params)
-        
-        # Debug: print raw response
-        print("Status:", resp.status_code)
-        print("Raw response:", resp.text[:500])  # limit to 500 chars for sanity
+        data = resp.json()
 
-        data = resp.json()  # this line fails if response isn't JSON
-
-        if "queryresult" not in data:
-            await ctx.send("⚠️ API error: `queryresult` missing.")
+        # Confirm 'queryresult' is present and successful
+        if not data.get("queryresult", {}).get("success", False):
+            await ctx.send("❌ WolframAlpha couldn't understand the query.")
             return
 
         pods = data["queryresult"].get("pods", [])
         if not pods:
-            await ctx.send("❌ No results found.")
+            await ctx.send("❌ No pods returned.")
             return
 
+        # Try to find the Result pod
         for pod in pods:
-            if pod["title"].lower().startswith("result"):
-                text = pod["subpods"][0]["plaintext"]
+            if pod.get("title", "").lower() == "result":
+                text = pod["subpods"][0].get("plaintext", "No result text.")
                 await ctx.send(f"**Result:** {text}")
                 return
 
-        await ctx.send(f"ℹ️First pod: {pods[0]['subpods'][0]['plaintext']}")
+        # Fallback: send first pod with plaintext
+        for pod in pods:
+            for subpod in pod.get("subpods", []):
+                if subpod.get("plaintext"):
+                    await ctx.send(f"ℹ️ {pod['title']}: {subpod['plaintext']}")
+                    return
+
+        await ctx.send("❓ No useful information found.")
 
     except Exception as e:
-        await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
         import traceback
         print(traceback.format_exc())
+        await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
+
 
 bot.remove_command("help")
 
