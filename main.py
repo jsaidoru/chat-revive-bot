@@ -4,9 +4,10 @@ import os
 from dotenv import load_dotenv
 import asyncio
 from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone
-import wolframalpha
+import requests
 
 load_dotenv()
+
 print("DEBUG: cwd =", os.getcwd())
 print("DEBUG: files =", os.listdir())
 
@@ -54,23 +55,37 @@ async def load():
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
-APP_ID = os.environ.get("APP_ID")
-client = wolframalpha.Client(APP_ID)
-
-print("APP_ID =", APP_ID)
+print("ENV loaded:", os.environ.get("APP_ID"))  # Should print your App ID
 @bot.command()
 async def ask(ctx, *, query: str):
+    app_id = os.environ.get("APP_ID")
+    url = "https://api.wolframalpha.com/v2/query"
+    params = {
+        "input": query,
+        "appid": app_id,
+        "output": "JSON"
+    }
+
     try:
-        res = await asyncio.to_thread(client.query, query)
-        results = list(res.results)
-        if not results:
+        resp = requests.get(url, params=params)
+        data = resp.json()
+
+        pods = data["queryresult"].get("pods", [])
+        if not pods:
             await ctx.send("❌ No answer found.")
             return
-        answer = results[0].text
-        await ctx.send(f"**Result:** {answer}")
+
+        for pod in pods:
+            if pod["title"].lower().startswith("result"):
+                text = pod["subpods"][0]["plaintext"]
+                await ctx.send(f"**Result:** {text}")
+                return
+
+        # Fallback
+        await ctx.send(f"ℹ️ Top result: {pods[0]['subpods'][0]['plaintext']}")
     except Exception as e:
         await ctx.send(f"⚠️ Error: `{type(e).__name__}: {e}`")
-        print("Error details:", type(e).__name__, e)
+
 bot.remove_command("help")
 
 bot.add_command(roll.roll)
