@@ -6,10 +6,8 @@ import asyncio
 from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone
 import requests
 
-load_dotenv(dotenv_path="/app/.env")
-
-print("DEBUG: cwd =", os.getcwd())
-print("DEBUG: files =", os.listdir())
+load_dotenv(dotenv_path=".env")
+print(os.environ)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -55,12 +53,10 @@ async def load():
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
-if os.environ.get("APP_ID") is None:
+if os.environ.get("WOLFRAM_APP_ID") is None:
     load_dotenv()
 
-load_dotenv()
-
-app_id = os.environ.get("APP_ID")
+app_id = os.environ.get("WOLFRAM_APP_ID")
 
 @bot.command()
 async def ask(ctx, *, query: str):
