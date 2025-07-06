@@ -47,7 +47,7 @@ async def ask(ctx, *, query: str):
         for pod in pods:
             for subpod in pod.get("subpods", []):
                 if subpod.get("plaintext"):
-                    await ctx.send(f"{pod['title']}: {subpod['plaintext']}")
+                    await ctx.send(f"<@{ctx.author.id}>\n{pod['title']}: {subpod['plaintext']}")
                     return
 
         await ctx.send("❓ No useful information found.")
