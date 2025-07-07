@@ -9,7 +9,7 @@ if os.environ.get("WOLFRAM_APP_ID") is None:
 wolfram_app_id = os.environ.get("WOLFRAM_APP_ID")
 
 @commands.command(help="Ask WolframAlpha. It might takes 1-3 seconds to compute, especially advanced maths like integrals and derivatives.")
-@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=20, type=commands.BucketType.user)
 async def ask(ctx, *, query: str):
     if not wolfram_app_id:
         await ctx.send("❌ WOLFRAM_APP_ID not set.")
