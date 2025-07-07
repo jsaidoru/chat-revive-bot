@@ -62,7 +62,7 @@ class Revive(commands.Cog):
     @revive.command(
         help="Revive the chat with an user-defined question! Do not use inappropriate words!"
     )
-    @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=360, type=commands.BucketType.guild)
     async def manual(self, ctx, *, question: str):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
