@@ -3,16 +3,16 @@ import os
 from dotenv import load_dotenv
 import requests
 
-if os.environ.get("WOLFRAM_ID") is None:
+if os.environ.get("WOLFRAM_APP_ID") is None:
     load_dotenv()
 
-wolfram_app_id = os.environ.get("WOLFRAM_ID")
+wolfram_app_id = os.environ.get("WOLFRAM_APP_ID")
 
 @commands.command(help="Ask WolframAlpha. It might takes 1-3 seconds to compute, especially advanced maths like integrals and derivatives.")
 @commands.cooldown(rate=1, per=20, type=commands.BucketType.user)
 async def ask(ctx, *, query: str):
     if not wolfram_app_id:
-        await ctx.send("❌ WOLFRAM_ID not set.")
+        await ctx.send("❌ WOLFRAM_APP_ID not set.")
         return
 
     url = "https://api.wolframalpha.com/v2/query"
