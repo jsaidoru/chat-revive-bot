@@ -15,7 +15,6 @@ class Random(commands.Cog):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def fen(self, ctx):
         fen = random_fen()
-        fen = ctx.message.content[5:].strip()
         fen_encoded = fen.replace(" ", "%20")
         url = f"https://fen2png.com/api/?fen={fen_encoded}&raw=true"
 
