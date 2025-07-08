@@ -26,7 +26,7 @@ async def on_message(message):
     if f"<@{bot.user.id}>" in content:
         if message.author.id == 1368120467147325491:
             await message.channel.send(
-                "To use Chat Revival Bot. You must consent that you do not ping jsaidoru for annoying messages."
+                "To use Chat Revival Bot, you must consent that you do not ping jsaidoru for annoying messages."
             )
             return
         response = """Hello! I am Chat Revival Bot. My prefix is >. 
