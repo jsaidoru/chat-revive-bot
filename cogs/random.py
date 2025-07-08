@@ -21,7 +21,7 @@ class Random(commands.Cog):
         response = requests.get(url)
         if response.status_code == 200:
             image_bytes = io.BytesIO(response.content)
-            await ctx.channel.send(file=discord.File(image_bytes, "chessboard.png"))
+            await ctx.channel.send(content=f"Here is a random FEN and the image of the chessboard: {fen}", file=discord.File(image_bytes, "chessboard.png"))
 
     @random.command(help="Generate a random string of 2-64 characters.\n")
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
