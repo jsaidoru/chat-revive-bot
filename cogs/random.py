@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import random as rand
 from randomfen import random_fen
-
+import requests
+import io
 
 class Random(commands.Cog):
     @commands.group()
@@ -14,7 +15,14 @@ class Random(commands.Cog):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def fen(self, ctx):
         fen = random_fen()
-        await ctx.send(f"Here is a random FEN: \n `{fen}`.")
+        fen = ctx.message.content[5:].strip()
+        fen_encoded = fen.replace(" ", "%20")
+        url = f"https://fen2png.com/api/?fen={fen_encoded}&raw=true"
+
+        response = requests.get(url)
+        if response.status_code == 200:
+            image_bytes = io.BytesIO(response.content)
+            await ctx.channel.send(file=discord.File(image_bytes, "chessboard.png"))
 
     @random.command(help="Generate a random string of 2-64 characters.\n")
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
