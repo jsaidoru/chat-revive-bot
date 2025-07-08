@@ -44,7 +44,7 @@ class Random(commands.Cog):
         help="Generate a random number from 0 to the number specified. If not, default is 69"
     )
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def integer(self, ctx, min: int = 0, max: int = 69):
+    async def integer(self, ctx, max: int = 69, min: int = 0):
         if max < 0:
             await ctx.send("❌ Maximum number must be 0 or greater.")
             return
