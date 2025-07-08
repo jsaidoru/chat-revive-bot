@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random as rand
+import secrets
 from discord.utils import escape_markdown, escape_mentions
 
 
@@ -26,7 +27,7 @@ class Revive(commands.Cog):
             await ctx.send("No questions found.")
             return
 
-        index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
+        index = secrets.randbelow(len(questions))  # Line number (0-based)
         chosen = questions[index].strip()
 
         embed = discord.Embed(
@@ -54,7 +55,7 @@ class Revive(commands.Cog):
             await ctx.send("No questions found.")
             return
 
-        index = rand.randint(0, len(questions) - 1)  # Line number (0-based)
+        index = secrets.randbelow(len(questions))  # Line number (0-based)
         chosen = questions[index].strip()
 
         await ctx.send(f"## Here is a random question:\n **{chosen}**")
