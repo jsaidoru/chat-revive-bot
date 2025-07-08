@@ -12,7 +12,7 @@ class Random(commands.Cog):
             await ctx.send("🎲 RNG stuff goes here! `>help random` for more info! You can also use >roll (no subcommands)")
 
     @random.command(help="Generate a random chess FEN.\n")
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
     async def fen(self, ctx):
         fen = random_fen()
         fen_encoded = fen.replace(" ", "%20")
