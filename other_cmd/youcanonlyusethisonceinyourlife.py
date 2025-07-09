@@ -23,9 +23,8 @@ async def youcanonlyusethisonceinyourlife(ctx):
         year = remaining / 31556926
         await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.9f} years) :3")
         return
-    await ctx.send(
-        f"<@{ctx.author.id}>\n🎉 Congrats, you can use this command again. Thank you for using Chat Revival Bot!"
-    )
+    else:
+        await ctx.send(f"<@{ctx.author.id}>\n🎉 Congrats, you can use this command again. Thank you for using Chat Revival Bot!")
     # Set new cooldown
     cooldown_db.upsert(
         {"user_id": user_id, "cooldown_until": now + lifetime}, User.user_id == user_id
