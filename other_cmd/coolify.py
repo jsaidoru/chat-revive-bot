@@ -1,7 +1,7 @@
 from discord.ext import commands
 @commands.command()
 async def coolify(ctx):
-    await ctx.send("""
+    await ctx.send(r"""
 **COOLIFY MANUAL**
 0. If you haven't done, create a GitHub repo:
  * Go to https://github.com/new
