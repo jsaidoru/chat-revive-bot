@@ -3,11 +3,7 @@ from discord.ext import commands
 async def coolify(ctx):
     await ctx.send(r"""
 **COOLIFY MANUAL**
-0. If you haven't done, create a GitHub repo:
- * Go to https://github.com/new
- * Make it public and don't initialize with README.md
- * Press **Create Repository**
- * After that, go back to coolify.
+0. If you haven't done, create a GitHub repo: Go to https://github.com/new, make it public and don't initialize with README.md. Press **Create Repository**. After that, go back to coolify.
 1. Go to **Projects**: https://coolify.artyom.me/projects. Add a new project, have a name (and description)
 2. At the Resource tab, choose **New**
 3. Choose your kind of application, often **Public Repository**
