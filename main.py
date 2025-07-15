@@ -52,11 +52,6 @@ async def load():
         if filename.endswith(".py"):
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
-@bot.command()
-async def pingamgforever(ctx):
-    while True: 
-        await ctx.send("<@1092431618502824016>")
-        await asyncio.sleep(2)
 bot.remove_command("help")
 
 bot.add_command(roll.roll)
