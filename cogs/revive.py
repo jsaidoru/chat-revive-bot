@@ -2,11 +2,13 @@ import discord
 from discord.ext import commands
 import random as rand
 from tinydb import TinyDB, Query
+import os
 
 class Revive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.db = TinyDB('asked_questions.json')
+        storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+        self.db = TinyDB(f"{storage_location}/asked_questions.json")
         self.Question = Query()
 
     # Load questions from a txt file, you can specify a context if needed
