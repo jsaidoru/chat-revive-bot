@@ -80,3 +80,6 @@ We are also returning the evaluation in White's perspective, so if the evaluatio
             else:
                 black_score += val
 """)
+
+async def setup(bot):
+    await bot.add_cog(ChessEngine(bot))
