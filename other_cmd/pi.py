@@ -13,7 +13,7 @@ if not pos_table.contains(Digit.key == 'pi'):
 
 def get_current_position():
     result = pos_table.get(Digit.key == 'pi')
-    if result is not None:
+    if result is not None and "value" in result:
         return result['value']
     else:
         # Optionally re-initialize if missing
@@ -37,5 +37,14 @@ def get_nth_digit(filename, n):
 async def pi(ctx):
     n = get_current_position()
     digit = get_nth_digit("digitsofpi.txt", n)
-    await ctx.send(f"Digit #{n} of π: `{digit}`")
+    suffix = None
+    if n == 1:
+        suffix = "st"
+    elif n == 2:
+        suffix = "nd"   
+    elif n == 3:
+        suffix = "rd"
+    else:
+        suffix = "th"
+    await ctx.send(f"The {n}{suffix} of π: `{digit}`")
     increment_position()
