@@ -84,51 +84,6 @@ This is a very basic evaluation function, but it can be a good starting point. A
 """)
     @chessengine.command(name="minimax", help="A brief documentation about the minimax algorithm")
     async def minimax(self, ctx):
-        await ctx.send("""
-**Minimax** is a search algorithm that finds the optimal move for a player, assuming that your opponent also plays optimally. It is widely used in two player turn-based games.
-
-## Core Idea
-Now imagine you are playing chess with your engine, and assume you are White. Now since the evaluation function returns the score in **White**'s perspective, the higher the score the better for White, so you want to make it as high as possible. Now you are the "maximizing player", as you want the evaluation to be the maximum.
-The engine is playing Black, and since the higher the evaluation the better for White, it wants to make the evaluation as low as possible, therefore it is the "minimizing player", because it wants to minimize the evaluation.
-In simple words, I will choose the move that gives me the best possible outcome, assuming my opponent will also play optimally to give me the worst possible outcome.
-
-## Analogy
-Imagine you're picking paths in a maze. You choose the path with the best prize. But along each path, your opponent places traps. So you simulate every possibility, thinking: "If I go here, my opponent will do this… then I will do that… etc."
-
-At the end, you backtrack and choose the path where, even if your opponent plays perfectly, you still do your best.
-
-## A Bit More Technical
-It's a tree of game states.
-Maximizer's turn: pick the move with the maximum score.
-Minimizer's turn: assume they pick the minimum score.
-Repeat recursively until the game ends or depth limit is reached, progressing further will make the search too slow.
-At the bottom (called leaves), use your evaluation function to estimate the score.""")
-
-        await ctx.send("""
-        So with the ideas above, this is an example of minimax:
-        ```
-        def minimax(board: chessboard,
-                    depth: integer,
-                    is_maximizing_player: boolean):
-
-        if depth limit reached or game is over:
-            return evaluation of the current position
-
-        if is_maximizing_player then
-            max evaluation = -infinity
-            for each legal move:
-                evaluation = minimax(board, depth - 1, false)
-                if evaluation > max evaluation:
-                    max evaluation = evaluation
-            return max evaluation
-
-        else then
-            min evaluation = infinity
-            for each legal move:
-                evaluation = minimax(board, depth - 1, true)
-                if evaluation < min evaluation:
-                    min evaluation = evaluation
-            return min evaluation
-        ```""")
+        await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/")
 async def setup(bot):
     await bot.add_cog(ChessEngine(bot))
