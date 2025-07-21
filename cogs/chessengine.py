@@ -55,30 +55,30 @@ The most basic thing you can do is to count the material on the board. So first,
 The unit we are using here is centipawns, which is 1/100 of a pawn. This is to avoid floating point calculations as much as possible and can make evaluating slightly faster.
 We are also returning the evaluation in White's perspective, so if the evaluation is positive, means White is better.
 
-```py
+Here is a pseudocode example on how to count material:
+```
     def evaluate(board):
         PIECE_VALUES = {
-            chess.PAWN: 100,
-            chess.KNIGHT: 300,
-            chess.BISHOP: 300,
-            chess.ROOK: 500,
-            chess.QUEEN: 900,
-            chess.KING: 20000, # The king is invaluable so you can set it to any value
+            PAWN: 100,
+            KNIGHT: 300,
+            BISHOP: 300,
+            ROOK: 500,
+            QUEEN: 900,
+            KING: 20000, # The king is invaluable so you can set it to any value
         }
                        
-        white_score = 0
-        black_score = 0
+        white score = 0
+        black score = 0
                        
-        for square in chess.SQUARES: # looping through all squares
-            piece: chess.Piece = board.piece_at(square) # check for the piece type at the current square
-            if not piece: # if there is no piece, continue
-                continue
-                       
-            val = pieces_val[piece.piece_type] # get the value of the piece
-            if piece.color == chess.WHITE: # add the value depends on the color
-                white_score += val
+        loop through all squares on the board:
+            if square is empty:
+                skip
+            
+            if is piece color is white:
+                white score += value of piece type at current square
             else:
-                black_score += val
+                black score += value of piece type at current square
+    ```
 """)
 
 async def setup(bot):
