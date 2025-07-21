@@ -1,8 +1,11 @@
+import os
 from discord.ext import commands
 from tinydb import TinyDB, Query
 import time
 import datetime
-cooldown_db = TinyDB("/storage/cooldowns.json")
+
+storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+cooldown_db = TinyDB(f"{storage_location}/cooldowns.json")
 User = Query()
 
 
