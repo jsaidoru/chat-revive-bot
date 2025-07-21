@@ -36,6 +36,6 @@ def get_nth_digit(filename, n):
 @commands.command()
 async def pi(ctx):
     n = get_current_position()
-    digit = get_nth_digit("./digitsofpi.txt", n)
+    digit = get_nth_digit("app/digitsofpi.txt", n)
     await ctx.send(f"Digit #{n} of π: `{digit}`")
     increment_position()
