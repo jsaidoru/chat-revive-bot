@@ -1,8 +1,9 @@
 from tinydb import TinyDB, Query
-import discord
 from discord.ext import commands
+import os
 
-db = TinyDB('pi_position.json')
+storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+db = TinyDB(f"{storage_location}/pi_position.json")
 pos_table = db.table('position')
 Digit = Query()
 
