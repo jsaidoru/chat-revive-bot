@@ -37,14 +37,6 @@ def get_nth_digit(filename, n):
 async def pi(ctx):
     n = get_current_position()
     digit = get_nth_digit("digitsofpi.txt", n)
-    suffix = None
-    if n == 1:
-        suffix = "st"
-    elif n == 2:
-        suffix = "nd"   
-    elif n == 3:
-        suffix = "rd"
-    else:
-        suffix = "th"
+    suffix = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     await ctx.send(f"The {n}{suffix} digit of π: `{digit}`")
     increment_position()
