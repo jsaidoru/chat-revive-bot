@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 class ChessEngine(commands.Cog):
@@ -103,32 +102,33 @@ It's a tree of game states.
 Maximizer's turn: pick the move with the maximum score.
 Minimizer's turn: assume they pick the minimum score.
 Repeat recursively until the game ends or depth limit is reached, progressing further will make the search too slow.
-At the bottom (called leaves), use your evaluation function to estimate the score.
-                       
-So with the ideas above, this is an example of minimax:
-```
-def minimax(board: chessboard,
-            depth: integer,
-            is_maximizing_player: boolean):
+At the bottom (called leaves), use your evaluation function to estimate the score.""")
 
-if depth limit reached or game is over:
-    return evaluation of the current position
+        await ctx.send("""
+        So with the ideas above, this is an example of minimax:
+        ```
+        def minimax(board: chessboard,
+                    depth: integer,
+                    is_maximizing_player: boolean):
 
-if is_maximizing_player then
-    max evaluation = -infinity
-    for each legal move:
-        evaluation = minimax(board, depth - 1, false)
-        if evaluation > max evaluation:
-            max evaluation = evaluation
-    return max evaluation
+        if depth limit reached or game is over:
+            return evaluation of the current position
 
-else then
-    min evaluation = infinity
-    for each legal move:
-        evaluation = minimax(board, depth - 1, true)
-        if evaluation < min evaluation:
-            min evaluation = evaluation
-    return min evaluation
-```""")
+        if is_maximizing_player then
+            max evaluation = -infinity
+            for each legal move:
+                evaluation = minimax(board, depth - 1, false)
+                if evaluation > max evaluation:
+                    max evaluation = evaluation
+            return max evaluation
+
+        else then
+            min evaluation = infinity
+            for each legal move:
+                evaluation = minimax(board, depth - 1, true)
+                if evaluation < min evaluation:
+                    min evaluation = evaluation
+            return min evaluation
+        ```""")
 async def setup(bot):
     await bot.add_cog(ChessEngine(bot))
