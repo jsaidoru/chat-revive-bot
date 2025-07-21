@@ -46,5 +46,5 @@ async def pi(ctx):
         suffix = "rd"
     else:
         suffix = "th"
-    await ctx.send(f"The {n}{suffix} of π: `{digit}`")
+    await ctx.send(f"The {n}{suffix} digit of π: `{digit}`")
     increment_position()
