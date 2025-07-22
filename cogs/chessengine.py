@@ -42,7 +42,19 @@ class MinimaxButton(discord.ui.View):
         command = self.bot.get_command("chessengine").get_command("minimax")
         await command.invoke(ctx)
 
+class AlphaBetaButton(discord.ui.View):
+    def __init__(self, bot):
+        super().__init__(timeout=None)
+        self.bot = bot
 
+    @discord.ui.button(label="You might also want to optimize Minimax", style=discord.ButtonStyle.success)
+    async def go_to_minimax(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Create a fake context from interaction
+        ctx = await self.bot.get_context(interaction.message)
+        ctx.interaction = interaction  # optional
+
+        command = self.bot.get_command("chessengine").get_command("alphabeta")
+        await command.invoke(ctx)
 
 class ChessEngine(commands.Cog):
 
@@ -51,7 +63,7 @@ class ChessEngine(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send("""
 This is a simple guide to help you get started with writing your own chess engine. Every parts will be divided into subcommands.
-I would like to call this a "wiki" because it will include some advanced topics as well, but if you just want to do this for fun, I also guided what to read next after each article.
+I would like to call this a "wiki" because it will include some advanced topics as well, I also guided what to read next after each article.
 There will be code examples for each part, so don't worry if you don't understand how to implement it in your engine. (but i know what are you gonna do heheheheh)
 
 Note that this is written in Python, but the concept is kinda the same. Install the newest Python version at https://www.python.org/downloads/release/python-3135/
@@ -98,8 +110,11 @@ Once you are done, continue with the second part - evaluation.
     
     @chessengine.command(name="minimax", help="A brief documentation about the minimax algorithm")
     async def minimax(self, ctx):
-        await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/")
+        await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/edit?usp=sharing")
 
+    @chessengine.command(name="alphabeta")
+    async def alphabeta(self, ctx):
+        await ctx.send("You can read about the explanation of alpha-beta pruning here: https://docs.google.com/document/d/1ePVT1ep_WX5m-qG2-5rRW_PvSVsZXlqix-fE7Z3frRE/edit?usp=sharing", view=AlphaBetaButton(ctx.bot))
 
 async def setup(bot):
     await bot.add_cog(ChessEngine(bot))
