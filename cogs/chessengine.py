@@ -1,21 +1,51 @@
 from discord.ext import commands
 import discord
-class EvaluationButton(discord.ui.View):
+class BoardRepresentationButton(discord.ui.View):
     def __init__(self, bot):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Go to Evaluation", style=discord.ButtonStyle.success)
+    @discord.ui.button(label="Read about the first part - Board Representation", style=discord.ButtonStyle.success)
     async def go_to_evaluation(self, interaction: discord.Interaction, button: discord.ui.Button):
         # Create a fake context from interaction
         ctx = await self.bot.get_context(interaction.message)
         ctx.interaction = interaction  # optional
 
-        # Manually call the 'evaluation' subcommand of the 'chessengine' group
+        command = self.bot.get_command("chessengine").get_command("boardrepresentation")
+        await command.invoke(ctx)
+
+class EvaluationButton(discord.ui.View):
+    def __init__(self, bot):
+        super().__init__(timeout=None)
+        self.bot = bot
+
+    @discord.ui.button(label="Done reading? You may want to know about evaluating too", style=discord.ButtonStyle.success)
+    async def go_to_evaluation(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Create a fake context from interaction
+        ctx = await self.bot.get_context(interaction.message)
+        ctx.interaction = interaction  # optional
+
         command = self.bot.get_command("chessengine").get_command("evaluation")
         await command.invoke(ctx)
 
+class MinimaxButton(discord.ui.View):
+    def __init__(self, bot):
+        super().__init__(timeout=None)
+        self.bot = bot
+
+    @discord.ui.button(label="You might want to read about Minimax too", style=discord.ButtonStyle.success)
+    async def go_to_minimax(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Create a fake context from interaction
+        ctx = await self.bot.get_context(interaction.message)
+        ctx.interaction = interaction  # optional
+
+        command = self.bot.get_command("chessengine").get_command("minimax")
+        await command.invoke(ctx)
+
+
+
 class ChessEngine(commands.Cog):
+
     @commands.group()
     async def chessengine(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -26,7 +56,7 @@ There will be code examples for each part, so don't worry if you don't understan
 
 Note that this is written in Python, but the concept is kinda the same. Install the newest Python version at https://www.python.org/downloads/release/python-3135/
 
-Type `>chessengine gettingstarted` for more info.
+Type `>chessengine gettingstarted` to start.
 """)
             
     @chessengine.command(name="gettingstarted", help="Getting started with writing a chess engine")
@@ -34,13 +64,12 @@ Type `>chessengine gettingstarted` for more info.
         await ctx.send("""
 Writing a chess engine is a lot of work, but it can be a fun and rewarding project.
 If you are new, you can start with a library. I will use the `python-chess` package here. https://python-chess.readthedocs.io for more info.
+
 There are 3 main parts of a chess engine:
 1. The board representation
 2. The board evaluation
 3. The search algorithm
-
-So, let's start with the first part. Use `>chess engine boardrepresentation` to continue.
-""")
+""", view=BoardRepresentationButton(ctx.bot))
     
     @chessengine.command(name="boardrepresentation", help="A brief documentation about board representation")
     async def boardrepresentation(self, ctx):
@@ -60,45 +89,17 @@ print(board.unicode(
 ))
 ```
 
-Once you are done, continue with the second part - evaluation. Use `chessengine evaluation` to continue.          
+Once you are done, continue with the second part - evaluation.       
 """, view=EvaluationButton(ctx.bot))
         
     @chessengine.command(name="evaluation", help="A brief documentation about board evaluation")
     async def evaluation(self, ctx):
-        await ctx.send("""
-**Evaluating** a chess position is a very complex task, but let's start with a simple evaluation function.
-The most basic thing you can do is to count the material on the board. So first, we need to define the values of the pieces:
-The unit we are using here is **centipawns**, which is 1/100 of a pawn. This is to avoid floating point calculations as much as possible and can make evaluating slightly faster.
-We are also returning the evaluation in **White's perspective**, so if the evaluation is positive, means White is better.
-
-Here is a pseudocode example on how to count material, no real code? please don't be a copycat
-```
-    def evaluate(board):
-        PIECE_VALUES = {
-            PAWN: 100,
-            KNIGHT: 300,
-            BISHOP: 300,
-            ROOK: 500,
-            QUEEN: 900,
-            KING: 20000, # The king is invaluable so you can set it to any value
-        }
-                       
-        white score = 0
-        black score = 0
-                       
-        loop through all squares on the board:
-            if square is empty:
-                skip
-            
-            if piece color is white:
-                white score += value of piece type at current square
-            else:
-                black score += value of piece type at current square
-    ```
-This is a very basic evaluation function, but it can be a good starting point. Alright, after you understand how this works, we can finally move on to the last part - the search algorithm. Use `>chessengine minimax` to continue.
-""")
+        await ctx.send("You can read about a simple evaluation function here: https://docs.google.com/document/d/1ZSZdRZMz72WQPmbPRlrE3xMOSmRajyhjcLlWwhb_Mdc/edit?usp=sharing", view=MinimaxButton(ctx.bot))
+    
     @chessengine.command(name="minimax", help="A brief documentation about the minimax algorithm")
     async def minimax(self, ctx):
         await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/")
+
+
 async def setup(bot):
     await bot.add_cog(ChessEngine(bot))
