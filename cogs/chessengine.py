@@ -1,18 +1,33 @@
 from discord.ext import commands
+import discord
+class EvaluationButton(discord.ui.View):
+    def __init__(self, bot):
+        super().__init__(timeout=None)
+        self.bot = bot
+
+    @discord.ui.button(label="Go to Evaluation", style=discord.ButtonStyle.success)
+    async def go_to_evaluation(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Create a fake context from interaction
+        ctx = await self.bot.get_context(interaction.message)
+        ctx.interaction = interaction  # optional
+
+        # Manually call the 'evaluation' subcommand of the 'chessengine' group
+        command = self.bot.get_command("chessengine").get_command("evaluation")
+        await command.invoke(ctx)
 
 class ChessEngine(commands.Cog):
     @commands.group()
     async def chessengine(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("""
-Hi. This is a simple guide to help you get started with writing your own chess engine. Every parts will be divided into subcommands.
+This is a simple guide to help you get started with writing your own chess engine. Every parts will be divided into subcommands.
 I would like to call this a "wiki" because it will include some advanced topics as well, but if you just want to do this for fun, I also guided what to read next after each article.
 There will be code examples for each part, so don't worry if you don't understand how to implement it in your engine. (but i know what are you gonna do heheheheh)
 
 Note that this is written in Python, but the concept is kinda the same. Install the newest Python version at https://www.python.org/downloads/release/python-3135/
 
 Type `>chessengine gettingstarted` for more info.
-""")
+""", view=EvaluationButton(ctx.bot))
             
     @chessengine.command(name="gettingstarted", help="Getting started with writing a chess engine")
     async def gettingstarted(self, ctx):
@@ -45,7 +60,7 @@ print(board.unicode(
 ))
 ```
 
-Done reading? Nice. Let's continue with the second part - evaluation. Use `chessengine evaluation` to continue.          
+Once you are done, continue with the second part - evaluation. Use `chessengine evaluation` to continue.          
 """)
         
     @chessengine.command(name="evaluation", help="A brief documentation about board evaluation")
