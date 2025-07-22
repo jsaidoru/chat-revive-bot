@@ -27,7 +27,7 @@ There will be code examples for each part, so don't worry if you don't understan
 Note that this is written in Python, but the concept is kinda the same. Install the newest Python version at https://www.python.org/downloads/release/python-3135/
 
 Type `>chessengine gettingstarted` for more info.
-""", view=EvaluationButton(ctx.bot))
+""")
             
     @chessengine.command(name="gettingstarted", help="Getting started with writing a chess engine")
     async def gettingstarted(self, ctx):
@@ -61,7 +61,7 @@ print(board.unicode(
 ```
 
 Once you are done, continue with the second part - evaluation. Use `chessengine evaluation` to continue.          
-""")
+""", view=EvaluationButton(ctx.bot))
         
     @chessengine.command(name="evaluation", help="A brief documentation about board evaluation")
     async def evaluation(self, ctx):
