@@ -110,11 +110,11 @@ Once you are done, continue with the second part - evaluation.
     
     @chessengine.command(name="minimax", help="A brief documentation about the minimax algorithm")
     async def minimax(self, ctx):
-        await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/edit?usp=sharing")
+        await ctx.send("You can read about the explanation of minimax here: https://docs.google.com/document/d/1f6Xrm-6T2NAjBnnoDXRhdUJLl3NmTY_nEJXXtDP1Q4c/edit?usp=sharing", view=AlphaBetaButton(ctx.bot))
 
     @chessengine.command(name="alphabeta")
     async def alphabeta(self, ctx):
-        await ctx.send("You can read about the explanation of alpha-beta pruning here: https://docs.google.com/document/d/1ePVT1ep_WX5m-qG2-5rRW_PvSVsZXlqix-fE7Z3frRE/edit?usp=sharing", view=AlphaBetaButton(ctx.bot))
+        await ctx.send("You can read about the explanation of alpha-beta pruning here: https://docs.google.com/document/d/1ePVT1ep_WX5m-qG2-5rRW_PvSVsZXlqix-fE7Z3frRE/edit?usp=sharing")
 
 async def setup(bot):
     await bot.add_cog(ChessEngine(bot))
