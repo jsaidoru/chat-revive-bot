@@ -117,9 +117,9 @@ class Revive(commands.Cog):
     
     @revive.command(name="reeducate")
     async def reeducate(self, ctx, message_id: int):
-        MOD_IDS = [1085862271399493732]
-        if ctx.author.id not in MOD_IDS or not ctx.author.guild_permissions.manage_messages:
-            return await ctx.send("❌ You don't have permission to do that.")
+        # MOD_IDS = [self.BOT_OWNER_ID]
+        if ctx.author.id != self.BOT_OWNER_ID:
+            return await ctx.send("(THIS COMMAND IS BEING EXPERIMENTED)❌ Only the developer can use this command.")
 
         try:
             target_message = await ctx.channel.fetch_message(message_id)
