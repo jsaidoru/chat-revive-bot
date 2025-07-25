@@ -28,6 +28,10 @@ async def on_message(message):
 Type `>help` to see my commands.
 """
         await message.channel.send(response)
+        return
+    if content.startswith(">:"):
+        await message.channel.send("is it notbaltic again")
+        return
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
