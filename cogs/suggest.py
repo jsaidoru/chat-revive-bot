@@ -34,10 +34,10 @@ class Suggest(commands.Cog):
         await ctx.send(
             "✅ Suggestion sent. It will be reviewed as soon as possible. Thanks for your contribution!\n"
         )
-        await owner.send(f"Suggestion from {ctx.author}:\n> {clean_suggestion}")
+        await owner.send(f"Question uggestion from {ctx.author}:\n> {clean_suggestion}")
 
     @suggest.command(
-        help="Suggest a new command to be added. It can be a normal or a sub-command based on the purpose.\n"
+        help="Suggest a new command to be added.\n"
     )
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def command(self, ctx, *, suggestion: str):
@@ -59,7 +59,7 @@ class Suggest(commands.Cog):
         owner = await self.bot.fetch_user(1085862271399493732)
 
         await ctx.send("✅ Suggestion sent. It will be reviewed as soon as possible.")
-        await owner.send(f"Suggestion from {ctx.author}:\n> {clean_suggestion}")
+        await owner.send(f"Command suggestion from {ctx.author}:\n> {clean_suggestion}")
 
     @suggest.command(help="Give a feedback about the bot")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
@@ -105,9 +105,9 @@ class Suggest(commands.Cog):
         owner = await self.bot.fetch_user(1085862271399493732)
 
         await ctx.send("✅ Suggestion sent. It will be reviewed as soon as possible.")
-        await owner.send(f"Suggestion from {ctx.author}:\n> {clean_suggestion}")
+        await owner.send(f"News ticker suggestion from {ctx.author}:\n> {clean_suggestion}")
 
-    @suggest.command(help="Suggest a news ticker")
+    @suggest.command(help="Suggest a fun fact to be added.")
     @commands.cooldown(rate=1, per=180, type=commands.BucketType.user)
     async def funfact(self, ctx, *, funfact: str):
         clean_funfact = escape_mentions(escape_markdown(funfact))
@@ -116,12 +116,12 @@ class Suggest(commands.Cog):
             return
         if len(clean_funfact) < 15:
             await ctx.send(
-                "❌ suggestion is too short. Please provide a detailed description."
+                "❌ Suggestion is too short. Please provide a detailed description."
             )
             return
         if len(clean_funfact) > 600:
             await ctx.send(
-                "❌ suggestion is too long. Go to <#1363732122866815077> please."
+                "❌ Suggestion is too long. Go to <#1363732122866815077> please."
             )
             return
 
