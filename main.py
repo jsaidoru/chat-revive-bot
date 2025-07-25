@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, colonthree, coolify, pi, experiment
+from other_cmd import roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, colonthree, coolify, pi, echo
 # , info
 
 load_dotenv(dotenv_path=".env")
@@ -24,15 +24,11 @@ async def on_message(message):
         return  # Ignore other bots
     content = message.content
     if f"<@{bot.user.id}>" in content:
-        if message.author.id == 1368120467147325491:
-            await message.channel.send(
-                "To use Chat Revival Bot, you must consent that you do not ping jsaidoru for annoying messages."
-            )
             return
-        response = """Hello! I am Chat Revival Bot. My prefix is >. 
+    response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
 """
-        await message.channel.send(response)
+    await message.channel.send(response)
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
@@ -63,12 +59,13 @@ bot.add_command(ask.ask)
 bot.add_command(colonthree.colonthree)
 bot.add_command(coolify.coolify)
 bot.add_command(pi.pi)
-bot.add_command(experiment.experiment)
+bot.add_command(echo.echo)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
     async with bot:
         await load()
-        await bot.start(TOKEN)
+        if TOKEN:
+            await bot.start(TOKEN)
 
 asyncio.run(main())

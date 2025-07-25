@@ -8,8 +8,9 @@ class Revive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
-        self.db = TinyDB(f"{storage_location}/asked_questions.json")
+        self.db = TinyDB(f"{storage_location}/asked_questions_2.json")
         self.Question = Query()
+        self.BOT_OWNER_ID: int = 1085862271399493732
 
     # Load questions from a txt file, you can specify a context if needed
     def load_questions(self, filepath='questions.txt'):
@@ -39,18 +40,19 @@ class Revive(commands.Cog):
 
         return question
 
-
+    cooldown: float = 600
     @commands.group(invoke_without_command=True)
-    @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=cooldown, type=commands.BucketType.user)
     async def revive(self, ctx):
         await ctx.invoke(self.bot.get_command("revive withping"))
         await ctx.send("-# check out more revive commands with >help revive!")
 
     @revive.command(help="Revive a chat by pinging Chat Revival Ping role.\n")
-    @commands.cooldown(rate=1, per=120, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=cooldown, type=commands.BucketType.user)
     async def withping(self, ctx):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
+        
 
         chosen = self.get_new_question(context='withping')
 
@@ -59,6 +61,7 @@ class Revive(commands.Cog):
             description=chosen,
             color=rand.randint(0, 0xFFFFFF),
             timestamp=ctx.message.created_at,
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         )
 
         await ctx.send(
@@ -66,16 +69,51 @@ class Revive(commands.Cog):
     # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""",
             embed=embed,
         )
+    @withping.before_invoke
+    async def reset_cooldown_for_owner_withping(self, ctx):
+        if ctx.author.id == self.BOT_OWNER_ID:
+            ctx.command.reset_cooldown(ctx)
 
     @revive.command(help="Only picks a random question instead of pinging")
-    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=cooldown, type=commands.BucketType.user)
     async def withoutping(self, ctx):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
         
         chosen = self.get_new_question(context='withoutping')
+        embed = discord.Embed(
+            title="🧠 **Random Revival Question**",
+            description=chosen,
+            color=rand.randint(0, 0xFFFFFF),
+            timestamp=ctx.message.created_at,
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        )
+        await ctx.send(embed=embed)
+    @withoutping.before_invoke
+    async def reset_cooldown_for_owner_withoutping(self, ctx):
+        if ctx.author.id == self.BOT_OWNER_ID:
+            ctx.command.reset_cooldown(ctx)
+    
+    @revive.command(help="Revive chat with manual questions.")
+    @commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+    async def manual(self, ctx, *, question: str):
+        if ctx.channel.id != 1363717602420981934:
+            return await ctx.send("❌ You can't use this command here.")
 
-        await ctx.send(f"## Here is a random question:\n **{chosen}**")
+        embed = discord.Embed(
+            title="🧠 **Manual Revival Question**",
+            description=question,
+            color=rand.randint(0, 0xFFFFFF),
+            timestamp=ctx.message.created_at,
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        )
+
+        await ctx.send(embed=embed)
+    @manual.before_invoke
+    async def reset_cooldown_for_owner_manual(self, ctx):
+        if ctx.author.id == self.BOT_OWNER_ID:
+            ctx.command.reset_cooldown(ctx)
+
 
 async def setup(bot):
     await bot.add_cog(Revive(bot))
