@@ -3,6 +3,7 @@ from discord.ext import commands
 import random as rand
 from tinydb import TinyDB, Query
 import os
+import datetime
 
 class Revive(commands.Cog):
     def __init__(self, bot):
@@ -113,7 +114,32 @@ class Revive(commands.Cog):
     async def reset_cooldown_for_owner_manual(self, ctx):
         if ctx.author.id == self.BOT_OWNER_ID:
             ctx.command.reset_cooldown(ctx)
+    
+    @revive.command(name="punish")
+    async def punish(self, ctx, message_id: int):
+        MOD_IDS = [1085862271399493732]
+        # Check if the author is allowed
+        if ctx.author.id not in MOD_IDS and not ctx.author.guild_permissions.manage_messages:
+            return await ctx.send("❌ You don't have permission to do that.")
 
+        try:
+            # Fetch the message by ID from the same channel
+            target_message = await ctx.channel.fetch_message(message_id)
+            if not target_message.editable:
+                return await ctx.send("❌ I can't edit that message (too old or wrong author).")
+
+            await target_message.edit(content=(
+                "I'm sorry for abusing the chat revive command. I will now sit quietly for 10 minutes to think about my actions. I'm re-educating myself."
+            ))
+            duration = datetime.timedelta(minutes=10)
+            await target_message.author.timeout(duration, reason="Abusing revive command")
+            
+        except discord.NotFound:
+            await ctx.send("❌ Message not found.")
+        except discord.Forbidden:
+            await ctx.send("❌ I don't have permission to edit that message.")
+        except discord.HTTPException as e:
+            await ctx.send(f"❌ Failed to edit message: {e}")
 
 async def setup(bot):
     await bot.add_cog(Revive(bot))
