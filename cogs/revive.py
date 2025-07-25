@@ -115,31 +115,52 @@ class Revive(commands.Cog):
         if ctx.author.id == self.BOT_OWNER_ID:
             ctx.command.reset_cooldown(ctx)
     
-    @revive.command(name="punish")
-    async def punish(self, ctx, message_id: int):
+    @revive.command(name="reeducate")
+    async def reeducate(self, ctx, message_id: int):
         MOD_IDS = [1085862271399493732]
-        # Check if the author is allowed
-        if ctx.author.id not in MOD_IDS and not ctx.author.guild_permissions.manage_messages:
+        if ctx.author.id not in MOD_IDS or not ctx.author.guild_permissions.manage_messages:
             return await ctx.send("❌ You don't have permission to do that.")
 
         try:
-            # Fetch the message by ID from the same channel
             target_message = await ctx.channel.fetch_message(message_id)
-            if not target_message.editable:
-                return await ctx.send("❌ I can't edit that message (too old or wrong author).")
+            troll = target_message.author
 
-            await target_message.edit(content=(
-                "I'm sorry for abusing the chat revive command. I will now sit quietly for 10 minutes to think about my actions. I'm re-educating myself."
-            ))
+            # Save their name/avatar
+            username = troll.display_name
+            avatar_url = troll.display_avatar.url
+
+            # Delete the original message
+            await target_message.delete()
+
+            # Find or create a webhook in the channel
+            webhooks = await ctx.channel.webhooks()
+            webhook = discord.utils.get(webhooks, name="Reeducator")
+            if webhook is None:
+                webhook = await ctx.channel.create_webhook(name="Reeducator")
+
+            # Send fake "edited" apology message via webhook
+            await webhook.send(
+                content=(
+                    "I'm sorry for abusing the chat revive command.\n"
+                    "I will now sit quietly for 10 minutes to think about my actions.\n"
+                    "I'm re-educating myself."
+                ),
+                username=username,
+                avatar_url=avatar_url
+            )
+
+            # Mute the user
             duration = datetime.timedelta(minutes=10)
-            await target_message.author.timeout(duration, reason="Abusing revive command")
-            
+            await troll.timeout(duration, reason="Troll detected and re-educated")
+
+            # await ctx.send(f"{troll.mention} has been re-educated via webhook and muted for 10 minutes. 😈")
+
         except discord.NotFound:
             await ctx.send("❌ Message not found.")
         except discord.Forbidden:
-            await ctx.send("❌ I don't have permission to edit that message.")
+            await ctx.send("❌ Missing permissions (Manage Messages, Webhooks, Timeout).")
         except discord.HTTPException as e:
-            await ctx.send(f"❌ Failed to edit message: {e}")
+            await ctx.send(f"⚠️ Failed: `{e}`")
 
 async def setup(bot):
     await bot.add_cog(Revive(bot))
