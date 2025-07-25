@@ -23,12 +23,11 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     content = message.content
-    if f"<@{bot.user.id}>" in content:
-            return
-    response = """Hello! I am Chat Revival Bot. My prefix is >. 
+    if "<@1389173090956742747>" in content: # chat revival bot id = 1389173090956742747
+        response = """Hello! I am Chat Revival Bot. My prefix is >. 
 Type `>help` to see my commands.
 """
-    await message.channel.send(response)
+        await message.channel.send(response)
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
