@@ -109,7 +109,11 @@ class Revive(commands.Cog):
             url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         )
 
-        await ctx.send(embed=embed)
+        await ctx.send(
+            f"""# <@&1376043512927359096>
+    # <:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821><:PINGPONGSOMEONERIVIVIED:1389438166116597821>**You have been summoned for revival by {ctx.author.display_name}!!!**""",
+            embed=embed,
+        )
     @manual.before_invoke
     async def reset_cooldown_for_owner_manual(self, ctx):
         if ctx.author.id == self.BOT_OWNER_ID:
