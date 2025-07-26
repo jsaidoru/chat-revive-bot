@@ -43,8 +43,11 @@ Type `>help` to see my commands.
 
             # Check if the command is "delete this" and the author is the same
             if message.content.strip().lower() == "delete this" and message.author.id == replied_to_message.author.id:
+                trick = await message.channel.send("snipe should be tricked lol")
+                await trick.delete()
+
                 await replied_to_message.delete()
-                await message.delete()  # Optional: also delete the "delete this" message
+                await message.delete()
         except discord.NotFound:
             pass  # Message might already be deleted
         except discord.Forbidden:
