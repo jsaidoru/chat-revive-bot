@@ -30,8 +30,28 @@ Type `>help` to see my commands.
         await message.channel.send(response)
         return
     if content.startswith(">:"):
-        await message.channel.send("is it notbaltic again")
         return
+    if message.reference:
+        # Get the referenced message ID
+        replied_to_message_id = message.reference.message_id
+        if replied_to_message_id is None:
+            return  # Defensive check
+
+        try:
+            # Fetch the actual message object
+            replied_to_message = await message.channel.fetch_message(replied_to_message_id)
+
+            # Check if the command is "delete this" and the author is the same
+            if message.content.strip().lower() == "delete this" and message.author.id == replied_to_message.author.id:
+                await replied_to_message.delete()
+                await message.delete()  # Optional: also delete the "delete this" message
+        except discord.NotFound:
+            pass  # Message might already be deleted
+        except discord.Forbidden:
+            pass  # Bot lacks permissions
+        except discord.HTTPException:
+            pass  # Other API failure
+
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
 
