@@ -13,7 +13,8 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
-bot = commands.Bot(command_prefix=">", intents=intents)
+
+bot = commands.Bot(command_prefix=">", intents=intents, allowed_mentions=discord.AllowedMentions.none())
 BOT_OWNER_ID = 1085862271399493732
 
 
@@ -46,8 +47,6 @@ Type `>help` to see my commands.
 
                 await replied_to_message.delete()
                 await message.delete()
-                trick = await message.channel.send("snipe should be tricked lol")
-                await trick.delete()
         except discord.NotFound:
             pass  # Message might already be deleted
         except discord.Forbidden:

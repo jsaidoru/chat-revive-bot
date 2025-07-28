@@ -1,17 +1,21 @@
 import discord
 from discord.ext import commands
+from discord.utils import escape_markdown, escape_mentions
 import random as rand
 from tinydb import TinyDB, Query
 import os
 import datetime
 
+
 class Revive(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
-        self.db = TinyDB(f"{storage_location}/asked_questions_2.json")
+        self.storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+        self.asked_questions_db = TinyDB(f"{self.storage_location}/asked_questions_2.json")
         self.Question = Query()
         self.BOT_OWNER_ID: int = 1085862271399493732
+        self.reeducate_cooldown = TinyDB(f"{self.storage_location}/reeducate_cooldown.json")
+        self.reeducate_cooldown_query = Query()
 
     # Load questions from a txt file, you can specify a context if needed
     def load_questions(self, filepath='questions.txt'):
@@ -24,7 +28,7 @@ class Revive(commands.Cog):
         all_questions = self.load_questions()
 
         # Get previously asked questions for this context
-        asked = {q['text'] for q in self.db.search(self.Question.context == context)}
+        asked = {q['text'] for q in self.asked_questions_db.search(self.Question.context == context)}
 
         # Get remaining questions for the specific context
         remaining = [q for q in all_questions if q not in asked]
@@ -37,7 +41,7 @@ class Revive(commands.Cog):
         question = rand.choice(remaining)
 
         # Insert the new question into the database with the context
-        self.db.insert({'text': question, 'context': context})
+        self.asked_questions_db.insert({'text': question, 'context': context})
 
         return question
 
@@ -100,10 +104,15 @@ class Revive(commands.Cog):
     async def manual(self, ctx, *, question: str):
         if ctx.channel.id != 1363717602420981934:
             return await ctx.send("❌ You can't use this command here.")
-
+        
+        clean_question = escape_mentions(escape_markdown(question))
+        if not clean_question:
+            return await ctx.send("provide a question bruh")
+        if escape_markdown(question) == question:
+            return await ctx.send("nah wtf are you trying to do")
         embed = discord.Embed(
             title="🧠 **Manual Revival Question**",
-            description=question,
+            description=clean_question,
             color=rand.randint(0, 0xFFFFFF),
             timestamp=ctx.message.created_at,
             url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -119,11 +128,24 @@ class Revive(commands.Cog):
         if ctx.author.id == self.BOT_OWNER_ID:
             ctx.command.reset_cooldown(ctx)
     
-    @revive.command(name="reeducate")
+    @revive.command(name="reeducate", help="Re-educate an user. How to use: >revive reeducate <message_id>. For moderators only.")
     async def reeducate(self, ctx, message_id: int):
-        # MOD_IDS = [self.BOT_OWNER_ID]
-        if ctx.author.id != self.BOT_OWNER_ID:
-            return await ctx.send("(THIS COMMAND IS BEING EXPERIMENTED)❌ Only the developer can use this command.")
+        MOD_IDS = [self.BOT_OWNER_ID, 1305602196494094437, 1113418468809773196, 1108574264946343967, 949850023536001064, 726378837050523698]
+        records = self.reeducate_cooldown.search(self.reeducate_cooldown_query.name == "global_timeout")
+
+        if records:
+            current_timeout: float = records[0]['timeout']
+        else:
+            current_timeout: float = 10
+            self.reeducate_cooldown.insert({'name': 'global_timeout', 'timeout': current_timeout})
+
+        # Use the timeout however you want
+        await ctx.send(f"Cooldown is now {current_timeout / 60} minutes.")
+
+        # Double the timeout
+        self.reeducate_cooldown.update({'timeout': current_timeout * 2}, self.reeducate_cooldown_query.name == "global_timeout")
+        if ctx.author.id not in MOD_IDS:
+            return await ctx.send("❌ Only the moderators can use this command.")
 
         try:
             target_message = await ctx.channel.fetch_message(message_id)
@@ -154,10 +176,10 @@ class Revive(commands.Cog):
             )
 
             # Mute the user
-            duration = datetime.timedelta(minutes=10)
+            duration = datetime.timedelta(minutes=current_timeout)
             await troll.timeout(duration, reason="Troll detected and re-educated")
 
-            # await ctx.send(f"{troll.mention} has been re-educated via webhook and muted for 10 minutes. 😈")
+            await ctx.send(f"{troll.mention} has been re-educated. Timeout has been doubled.")
 
         except discord.NotFound:
             await ctx.send("❌ Message not found.")
