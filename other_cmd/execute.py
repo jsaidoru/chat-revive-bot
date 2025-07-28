@@ -9,6 +9,7 @@ async def execute(ctx, *, code: str):
     escaped_code = escape_mentions(escape_markdown(code))
     piston = PistonAPI()
 
+    running = await ctx.send("⚙️ Executing code. This might take 1-5 seconds...")
     # Run piston.execute in a thread to avoid blocking
     try:
         result = await asyncio.to_thread(
@@ -19,8 +20,6 @@ async def execute(ctx, *, code: str):
         )
     except Exception as e:
         return await ctx.send(f"❌ Error during execution:\n`{str(e)}`")
-
-    running = await ctx.send("⚙️ Executing code. This might take 1-5 seconds...")
 
     if result:
         output = result.strip() or "*No output*"
