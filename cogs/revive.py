@@ -108,7 +108,7 @@ class Revive(commands.Cog):
         clean_question = escape_mentions(escape_markdown(question))
         if not clean_question:
             return await ctx.send("provide a question bruh")
-        if escape_markdown(question) == question:
+        if escape_markdown(question) != question:
             return await ctx.send("nah wtf are you trying to do")
         embed = discord.Embed(
             title="🧠 **Manual Revival Question**",
