@@ -16,7 +16,6 @@ async def execute(ctx, *, code: str):
             language="py",
             version="default",
             code=code,
-            timeout=6969
         )
     except Exception as e:
         return await ctx.send(f"❌ Error during execution:\n`{str(e)}`")
