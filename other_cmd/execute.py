@@ -13,8 +13,8 @@ async def execute(ctx, *, code: str):
     try:
         result = await asyncio.to_thread(
             piston.execute,
-            language="py",
-            version="default",
+            language="python",
+            version="^3",
             code=code,
         )
     except Exception as e:
