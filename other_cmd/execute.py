@@ -9,7 +9,7 @@ from whats_that_code.election import guess_language_all_methods
 async def execute(ctx, *, code: str):
     piston = PistonAPI()
     lang = guess_language_all_methods(code)
-    running = await ctx.send("⚙️ Executing code. This might take 1-5 seconds... Please note that auto-detection might have errors.")
+    running = await ctx.send(f"🔍 Detected language: `{lang}`. \n ⚙️ Executing code. This might take 1-5 seconds... Please note that auto-detection might have errors.")
     # Run piston.execute in a thread to avoid blocking
     try:
         result = await asyncio.to_thread(
