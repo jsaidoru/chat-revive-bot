@@ -1,10 +1,5 @@
-import time
-from pistonapi import PistonAPI
-start = time.time()
-# Create a new Piston API instance
-piston = PistonAPI()
-# Execute your own code!
-code = 'print("Hello, World!")'
-print(piston.execute(language="py", version="3.10.0", code=code))
-end= time.time()
-print(f"Execution time: {end - start} seconds")
+from whats_that_code.election import guess_language_all_methods
+code = "#include <stdio.h>\ndef main(param: str): std::cout<<'Hello, World!';"
+result = guess_language_all_methods(code)
+print(result)
+# matl, bash, befunge93, bqn, brachylog, brainfuck, cjam, clojure, cobol, coffeescript, cow, crystal, dart, dash, typescript, javascript, basic.net, fsharp.net, csharp.net, fsi, dragon, elixir, emacs, emojicode, erlang, file, forte, forth, freebasic, awk, c, c++, d, fortran, go, golfscript, groovy, haskell, husk, iverilog, japt, java, jelly, julia, kotlin, lisp, llvm_ir, lolcode, lua, csharp, basic, nasm, nasm64, nim, ocaml, octave, osabie, paradoc, pascal, perl, php, ponylang, prolog, pure, powershell, pyth, python2, python, racket, raku, retina, rockstar, rscript, ruby, rust, samarium, scala, smalltalk, sqlite3, swift, vlang, vyxal, yeethon, zig,

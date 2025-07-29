@@ -41,10 +41,10 @@ class Random(commands.Cog):
         await ctx.send(f"Here is a random string of length {length}: `{random_string}`")
 
     @random.command(
-        help="Generate a random number from 0 to the number specified. If not, default is 69"
+        help="Generate a random number from 0 to the number specified. If not, default is 100"
     )
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def integer(self, ctx, max: int = 69, min: int = 0):
+    async def integer(self, ctx, min: int = 0, max: int = 100):
         if max < 0:
             await ctx.send("❌ Maximum number must be 0 or greater.")
             return
