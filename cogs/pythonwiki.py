@@ -430,3 +430,6 @@ def count_up_to(max_val):
 for number in count_up_to(5):
     print(number)
 ```""")
+
+async def setup(bot):
+    await bot.add_cog(PythonWiki(bot))
