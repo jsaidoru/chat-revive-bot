@@ -198,6 +198,7 @@ dependencies = [
     { name = "joblib" },
     { name = "multidict" },
     { name = "numpy" },
+    { name = "pistonapi" },
     { name = "propcache" },
     { name = "python-chess" },
     { name = "python-dotenv" },
@@ -234,6 +235,7 @@ requires-dist = [
     { name = "joblib", specifier = "==1.5.1" },
     { name = "multidict", specifier = "==6.6.2" },
     { name = "numpy", specifier = "==2.3.1" },
+    { name = "pistonapi", specifier = ">=1.0.1" },
     { name = "propcache", specifier = "==0.3.2" },
     { name = "python-chess", specifier = "==1.999" },
     { name = "python-dotenv", specifier = "==1.1.1" },
@@ -472,6 +474,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/22/8a/ccdf201457ed8ac6245187850aff4ca56a79edbea4829f4e9f14d46fa9a5/numpy-2.3.1-cp313-cp313t-win32.whl", hash = "sha256:6269b9edfe32912584ec496d91b00b6d34282ca1d07eb10e82dfc780907d6c2e", size = 6440678, upload-time = "2025-06-21T12:24:21.596Z" },
     { url = "https://files.pythonhosted.org/packages/f1/7e/7f431d8bd8eb7e03d79294aed238b1b0b174b3148570d03a8a8a8f6a0da9/numpy-2.3.1-cp313-cp313t-win_amd64.whl", hash = "sha256:2a809637460e88a113e186e87f228d74ae2852a2e0c44de275263376f17b5bdc", size = 12870697, upload-time = "2025-06-21T12:24:40.644Z" },
     { url = "https://files.pythonhosted.org/packages/d4/ca/af82bf0fad4c3e573c6930ed743b5308492ff19917c7caaf2f9b6f9e2e98/numpy-2.3.1-cp313-cp313t-win_arm64.whl", hash = "sha256:eccb9a159db9aed60800187bc47a6d3451553f0e1b08b068d8b277ddfbb9b244", size = 10260376, upload-time = "2025-06-21T12:24:56.884Z" },
+]
+
+[[package]]
+name = "pistonapi"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/41/7d1b34a1099a65773b09e49bf4e7a13c3faaf9d5c73ddac4da4550cc521f/pistonapi-1.0.1.tar.gz", hash = "sha256:22c43802bb4a62168e4a790e40a29c43825337cc2a6ebecf644ab15962033209", size = 2188, upload-time = "2021-04-29T11:59:23.688Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0d/f1/7e471dbe3e752acb045e2f035b315a3d18e3be93218bad4d37060f1ded63/pistonapi-1.0.1-py3-none-any.whl", hash = "sha256:9a88fad690cdfd679fa654c83fb8864dcc7779821c2d16d0326343388687dcae", size = 2601, upload-time = "2021-04-29T11:59:22.209Z" },
 ]
 
 [[package]]
