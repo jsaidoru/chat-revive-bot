@@ -363,7 +363,7 @@ def something():
     return "I ran out of creativity"
 ```""")
         
-    @pythonwiki.command(name="False")
+    @pythonwiki.command(name="True")
     async def true_kw(self, ctx):
         await ctx.send("""
 `True` is a built-in constant representing the Boolean value of true. It is one of the two Boolean literal values, the other being `False`. These values are fundamental for logical operations, conditional statements, and controlling program flow.
