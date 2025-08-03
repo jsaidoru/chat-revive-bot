@@ -14,7 +14,7 @@ intents.messages = True
 intents.guilds = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=">", intents=intents, allowed_mentions=discord.AllowedMentions.none())
+bot = commands.Bot(command_prefix=">", intents=intents, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=True, replied_user=False)
 BOT_OWNER_ID = 1085862271399493732
 
 
