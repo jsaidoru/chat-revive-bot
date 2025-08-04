@@ -2,8 +2,11 @@ from discord.ext import commands
 from discord.utils import escape_mentions, escape_markdown
 import requests
 import asyncio
+import os
 
-with open("app/pychess.py", "r", encoding="utf-8") as f:
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_PATH = os.path.join(BASE_DIR, "app", "pychess.py")
+with open(FILE_PATH, "r", encoding="utf-8") as f:
     source = f.read()
 
 async def run_code(code):
