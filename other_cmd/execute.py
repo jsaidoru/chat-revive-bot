@@ -40,6 +40,6 @@ async def execute(ctx, *, code: str):
     if result:
         output: str = result["run"]["output"]
         safe_output = escape_mentions(escape_markdown(output))
-        await running.edit(content=f"✅ **Code output:**\n```py{safe_output}```")
+        await running.edit(content=f"✅ **Code output:**\n```py\n{safe_output}```")
     else:
         await running.edit(content="❌ No output received.")
