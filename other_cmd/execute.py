@@ -1,32 +1,42 @@
-from pistonapi import PistonAPI
 from discord.ext import commands
 from discord.utils import escape_mentions, escape_markdown
+import requests
 import asyncio
 
-BOT_OWNER_ID = 1085862271399493732
+with open("pychess.py", "r", encoding="utf-8") as f:
+    source = f.read()
+
+async def run_code(code):
+    def send_request():
+        url = "https://emkc.org/api/v2/piston/execute"
+        payload = {
+            "language": "python",
+            "version": "3.10.0",
+            "files": [
+                {"name": "main.py", "content": code},
+                {"name": "chess.py", "content": source}
+            ],
+            "main": "main.py"
+        }
+        res = requests.post(url, json=payload)
+        return res.json()
+
+    result = await asyncio.to_thread(send_request)
+    return result
+
 @commands.command(name="execute", help="Execute Python codes.")
-@commands.cooldown(rate=1, per=30, type=commands.BucketType.user)
+@commands.cooldown(rate=1, per=20, type=commands.BucketType.user)
 async def execute(ctx, *, code: str):
-    piston = PistonAPI()
     running = await ctx.send("⚙️ Executing code. This might take 1-5 seconds...")
-    # Run piston.execute in a thread to avoid blocking
+
     try:
-        result = await asyncio.to_thread(
-            piston.execute,
-            language="python",
-            version="^3",
-            code=code,
-        )
+        result = await run_code(code)
     except Exception as e:
         return await ctx.send(f"❌ Error during execution:\n`{str(e)}`")
 
     if result:
-        output = result.strip() or "*No output*"
+        output: str = result["run"]["output"]
         safe_output = escape_mentions(escape_markdown(output))
-        await running.edit(content=f"✅ **Code output:**\n```py\n{safe_output}\n```")
+        await running.edit(content=f"✅ **Code output:**\n```py{safe_output}```")
     else:
         await running.edit(content="❌ No output received.")
-@commands.before_invoke
-async def reset_cooldown_for_owner(self, ctx):
-    if ctx.author.id == BOT_OWNER_ID:
-        ctx.command.reset_cooldown(ctx)
