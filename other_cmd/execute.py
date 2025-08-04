@@ -3,7 +3,7 @@ from discord.utils import escape_mentions, escape_markdown
 import requests
 import asyncio
 
-with open("pychess.py", "r", encoding="utf-8") as f:
+with open("app/pychess.py", "r", encoding="utf-8") as f:
     source = f.read()
 
 async def run_code(code):
