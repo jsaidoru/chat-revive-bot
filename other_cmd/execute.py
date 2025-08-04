@@ -5,7 +5,7 @@ import asyncio
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FILE_PATH = os.path.join(BASE_DIR "pychess.py")
+FILE_PATH = os.path.join(BASE_DIR, "pychess.py")
 with open(FILE_PATH, "r", encoding="utf-8") as f:
     source = f.read()
 
