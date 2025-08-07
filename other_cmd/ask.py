@@ -29,12 +29,12 @@ async def ask(ctx, *, query: str):
 
         # Confirm 'queryresult' is present and successful
         if not data.get("queryresult", {}).get("success", False):
-            await ctx.send(f"<@{ctx.author.id}>\n❌ WolframAlpha couldn't understand the query.")
+            await searching.edit(content=f"<@{ctx.author.id}>\n❌ WolframAlpha couldn't understand the query.")
             return
 
         pods = data["queryresult"].get("pods", [])
         if not pods:
-            await ctx.send("❌ No pods returned.")
+            await searching.edit(content="❌ No pods returned.")
             return
 
         # Try to find the Result pod
@@ -72,7 +72,7 @@ async def ask(ctx, *, query: str):
             if text:
                 if len(text) > 1000:
                     text = text[:1000] + "..."
-                return await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
+                return await searching.edit(content=f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
 
         await searching.edit(content=f"<@{ctx.author.id}>\n❓ No useful information found.")
 
