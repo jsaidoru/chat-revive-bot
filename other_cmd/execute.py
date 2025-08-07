@@ -41,7 +41,7 @@ async def execute(ctx, *, code: str):
         output: str = result["run"]["output"]
         safe_output = escape_mentions(output)
         await running.edit(content=f"""✅ **Code output:**
-```py
+```
 {safe_output}
 ```""")
     else:

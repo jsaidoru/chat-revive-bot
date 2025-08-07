@@ -11,6 +11,7 @@ wolfram_app_id = os.environ.get("WOLFRAM_APP_ID")
 @commands.command(help="Ask WolframAlpha. It might takes 1-3 seconds to compute, especially advanced maths like integrals and derivatives.")
 @commands.cooldown(rate=1, per=20, type=commands.BucketType.user)
 async def ask(ctx, *, query: str):
+    searching = await ctx.send("⚙️ Querying. Please wait... This might take 3-5 seconds.")
     if not wolfram_app_id:
         await ctx.send("❌ WOLFRAM_APP_ID not set.")
         return
@@ -63,7 +64,7 @@ async def ask(ctx, *, query: str):
                 text = pod["subpods"][0].get("plaintext", "No result text.")
                 if len(text) > 1000:
                     text = text[:1000] + "..."
-                await ctx.send(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
+                await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
                 return
             
         # Fallback: No preferred pods exist
@@ -72,10 +73,10 @@ async def ask(ctx, *, query: str):
             if text:
                 if len(text) > 1000:
                     text = text[:1000] + "..."
-                await ctx.send(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
+                await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
                 return
 
-        await ctx.send(f"<@{ctx.author.id}>\n❓ No useful information found.")
+        await searching.edit(f"<@{ctx.author.id}>\n❓ No useful information found.")
 
     except Exception as e:
         import traceback
