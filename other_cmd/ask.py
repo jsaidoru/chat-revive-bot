@@ -37,18 +37,43 @@ async def ask(ctx, *, query: str):
             return
 
         # Try to find the Result pod
-        for pod in pods:
-            if pod.get("title", "").lower() == "result":
-                text = pod["subpods"][0].get("plaintext", "No result text.")
-                await ctx.send(f"<@{ctx.author.id}>\n**Result:** {text}")
-                return
+        preferred_titles = [
+            "result",
+            "exact result",
+            "decimal approximation",
+            "definite integral",
+            "derivative",
+            "solution",
+            "basic information",
+            "notable facts",
+            "geographic properties",
+            "properties",
+            "location", 
+            "timeline",
+            "history",
+            "family",
+            "education",
+            "statistics",
+        ]
 
-        # Fallback: send first pod with plaintext
+        pod_dict = {pod.get("title", "").lower(): pod for pod in pods}
+        for title in preferred_titles:
+            if title in pod_dict:
+                pod = pod_dict[title]
+                text = pod["subpods"][0].get("plaintext", "No result text.")
+                if len(text) > 1000:
+                    text = text[:1000] + "..."
+                await ctx.send(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
+                return
+            
+        # Fallback: No preferred pods exist
         for pod in pods:
-            for subpod in pod.get("subpods", []):
-                if subpod.get("plaintext"):
-                    await ctx.send(f"<@{ctx.author.id}>\n{pod['title']}: {subpod['plaintext']}")
-                    return
+            text = pod["subpods"][0].get("plaintext", "").strip()
+            if text:
+                if len(text) > 1000:
+                    text = text[:1000] + "..."
+                await ctx.send(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
+                return
 
         await ctx.send(f"<@{ctx.author.id}>\n❓ No useful information found.")
 
