@@ -64,8 +64,7 @@ async def ask(ctx, *, query: str):
                 text = pod["subpods"][0].get("plaintext", "No result text.")
                 if len(text) > 1000:
                     text = text[:1000] + "..."
-                await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
-                return
+                return await searching.edit(content=f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
             
         # Fallback: No preferred pods exist
         for pod in pods:
@@ -73,10 +72,9 @@ async def ask(ctx, *, query: str):
             if text:
                 if len(text) > 1000:
                     text = text[:1000] + "..."
-                await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
-                return
+                return await searching.edit(f"<@{ctx.author.id}>\n**{pod['title']}:** {text}")
 
-        await searching.edit(f"<@{ctx.author.id}>\n❓ No useful information found.")
+        await searching.edit(content=f"<@{ctx.author.id}>\n❓ No useful information found.")
 
     except Exception as e:
         import traceback

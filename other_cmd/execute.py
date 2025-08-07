@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord.utils import escape_mentions, escape_markdown
+from discord.utils import escape_mentions
 import requests
 import asyncio
 import os
