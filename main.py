@@ -61,7 +61,7 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
 
 storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
-kekwdb = TinyDB(f"{storage_location}/kekwdb_dev.json")
+kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
 User = Query()
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -76,6 +76,7 @@ async def on_reaction_add(reaction, user):
     # Only count KEKW emoji
     if isinstance(reaction.emoji, (discord.Emoji, discord.PartialEmoji)) and reaction.emoji.id == 1363718257835769916:
         receiver_id = reaction.message.author.id  # << the person who RECEIVES the KEKW
+        if receiver_id == 1389173090956742747: return
 
         user_data = kekwdb.get(User.id == receiver_id)
         if user_data is None:
