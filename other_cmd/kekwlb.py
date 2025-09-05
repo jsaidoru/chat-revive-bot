@@ -4,7 +4,7 @@ from tinydb import TinyDB
 import os
 
 storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
-kekwdb = TinyDB(f"{storage_location}/kekwdb_dev.json")
+kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
 @commands.command(name="kekwlb", aliases=["kekwleaderboard"])
 async def kekwlb(ctx):
     # Get all users from DB
