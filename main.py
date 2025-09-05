@@ -3,8 +3,9 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256
+from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, kekwlb
 # , info
+from tinydb import TinyDB, Query
 
 load_dotenv(dotenv_path=".env")
 
@@ -13,6 +14,7 @@ intents.message_content = True
 intents.messages = True
 intents.guilds = True
 intents.members = True
+intents.reactions = True
 
 bot = commands.Bot(command_prefix=">", 
                    intents=intents, 
@@ -26,35 +28,23 @@ async def on_message(message):
     if message.author.bot:
         return  # Ignore other bots
     content = message.content
-    if "<@1389173090956742747>" in content: # chat revival bot id = 1389173090956742747
-        response = """Hello! I am Chat Revival Bot. My prefix is >. 
-Type `>help` to see my commands.
-"""
-        await message.channel.send(response)
-        return
     if content.startswith(">:"):
         return
     if message.reference:
-        # Get the referenced message ID
         replied_to_message_id = message.reference.message_id
         if replied_to_message_id is None:
-            return  # Defensive check
+            return
 
         try:
-            # Fetch the actual message object
             replied_to_message = await message.channel.fetch_message(replied_to_message_id)
-
-            # Check if the command is "delete this" and the author is the same
             if message.content.strip().lower() == "delete this" and message.author.id == replied_to_message.author.id:
 
                 await replied_to_message.delete()
                 await message.delete()
         except discord.NotFound:
-            pass  # Message might already be deleted
-        except discord.Forbidden:
-            pass  # Bot lacks permissions
+            pass
         except discord.HTTPException:
-            pass  # Other API failure
+            pass
 
     await bot.process_commands(message)  # IMPORTANT!1!!11!
 
@@ -69,6 +59,26 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+
+storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+kekwdb = TinyDB(f"{storage_location}/kekwdb.json")
+User = Query()
+@bot.event
+async def on_reaction_add(reaction, user):
+    if user == bot.user:
+        return
+
+    if user.id == reaction.message.author.id:
+        return
+    
+    if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
+        if reaction.emoji.id == 1363718257835769916: # KEKW
+            if not kekwdb.contains(User.id == user.id):
+                kekwdb.insert({'id': user.id, 'count': 1})
+            else:
+                user_data = kekwdb.get(User.id == user.id)
+                if user_data is not None:
+                    kekwdb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
 
 async def load():
     for filename in os.listdir("./cogs"):
@@ -88,6 +98,7 @@ bot.add_command(pi.pi)
 bot.add_command(echo.echo)
 bot.add_command(execute.execute)
 bot.add_command(sha256.sha256_discord)
+bot.add_command(kekwlb.kekwlb)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
