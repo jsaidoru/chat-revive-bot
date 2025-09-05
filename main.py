@@ -61,24 +61,28 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
 
 storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
-kekwdb = TinyDB(f"{storage_location}/kekwdb.json")
+kekwdb = TinyDB(f"{storage_location}/kekwdb_dev.json")
 User = Query()
 @bot.event
 async def on_reaction_add(reaction, user):
-    if user == bot.user:
+    # Ignore bot's own reactions
+    if user.id == bot.user.id:
         return
 
+    # Ignore if reactor is the same as the message author (no self-KEKW farming)
     if user.id == reaction.message.author.id:
         return
-    
-    if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
-        if reaction.emoji.id == 1363718257835769916: # KEKW
-            if not kekwdb.contains(User.id == user.id):
-                kekwdb.insert({'id': user.id, 'count': 1})
-            else:
-                user_data = kekwdb.get(User.id == user.id)
-                if user_data is not None:
-                    kekwdb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
+
+    # Only count KEKW emoji
+    if isinstance(reaction.emoji, (discord.Emoji, discord.PartialEmoji)) and reaction.emoji.id == 1363718257835769916:
+        receiver_id = reaction.message.author.id  # << the person who RECEIVES the KEKW
+
+        user_data = kekwdb.get(User.id == receiver_id)
+        if user_data is None:
+            kekwdb.insert({'id': receiver_id, 'count': 1})
+        else:
+            count = user_data.get('count', 0)
+            kekwdb.update({'count': count + 1}, User.id == receiver_id) # type: ignore
 
 async def load():
     for filename in os.listdir("./cogs"):
