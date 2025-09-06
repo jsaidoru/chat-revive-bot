@@ -31,7 +31,7 @@ class SkullLeaderboard(commands.Cog):
             user = ctx.guild.get_member(user_id) or await ctx.client.fetch_user(user_id)
             username = user.name if user else f"Unknown User ({user_id})"
 
-            description += f"**{i}. {username}**: {count} <:KEKW:1363718257835769916>\n"
+            description += f"**{i}. {username}**: {count} <:iosskull:1413704062104375416>\n"
 
         embed = discord.Embed(
             title="<:iosskull:1413688742610473032> Skull Leaderboard <:iosskull:1413688742610473032>",
