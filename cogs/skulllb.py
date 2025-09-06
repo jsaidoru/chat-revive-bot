@@ -24,14 +24,19 @@ class SkullLeaderboard(commands.Cog):
         sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
 
         description = ""
-        for i, entry in enumerate(sorted_users[:length], start=1):
+        shown = 0
+        for entry in sorted_users:
             user_id = entry['id']
             count = entry['count']
 
             user = ctx.guild.get_member(user_id) or await ctx.client.fetch_user(user_id)
-            username = user.name if user else f"Unknown User ({user_id})"
+            if not user or user.bot:
+                continue  # Skip bots and unknown users
 
-            description += f"**{i}. {username}**: {count} <:iosskull:1413708504060924004>\n"
+            shown += 1
+            description += f"**{shown}. {user.name}**: {count} <:iosskull:1413708504060924004>\n"
+            if shown >= length:
+                break
 
         embed = discord.Embed(
             title="<:iosskull:1413708504060924004> Skull Leaderboard <:iosskull:1413708504060924004>",
