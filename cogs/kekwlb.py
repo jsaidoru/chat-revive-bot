@@ -29,7 +29,7 @@ class KekwLeaderboard(commands.Cog):
             user_id = entry['id']
             count = entry['count']
 
-            user = ctx.guild.get_member(user_id) or await ctx.client.fetch_user(user_id)
+            user = ctx.guild.get_member(user_id) or await ctx.cbot.fetch_user(user_id)
             username = user.name if user else f"Unknown User ({user_id})"
 
             description += f"**{i}. {username}**: {count} <:KEKW:1363718257835769916>\n"

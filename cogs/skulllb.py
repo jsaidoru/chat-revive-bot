@@ -10,7 +10,12 @@ class SkullLeaderboard(commands.Cog):
         self.skulldb = TinyDB(f"{self.storage_location}/skulldb.json")
     
     @commands.group(name="skulllb", aliases=["skullleaderboard"], invoke_without_command=True)
-    async def skulllb(self, ctx):
+    async def skulllb(self, ctx, *, length: int = 10):
+        if length > 20:
+            return await ctx.send("⚠️ Max leaderboard length is 20.")
+        if length <= 0:
+            return await ctx.send("are you stupid")
+        
         all_users = self.skulldb.all()
         if not all_users:
             await ctx.send("No skull reactions recorded yet <:iosskull:1413688742610473032>")
@@ -19,7 +24,7 @@ class SkullLeaderboard(commands.Cog):
         sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
 
         description = ""
-        for i, entry in enumerate(sorted_users[:10], start=1):
+        for i, entry in enumerate(sorted_users[:length], start=1):
             user_id = entry['id']
             count = entry['count']
 
@@ -57,7 +62,7 @@ class SkullLeaderboard(commands.Cog):
         rank = sorted_users.index(user_entry) + 1
         count = user_entry['count']
 
-        await ctx.send(f"<:iosskull:1413688742610473032> {member.display_name} has **{count} <:iosskull:1413688742610473032>s** and is ranked **#{rank}** on the leaderboard!")
+        await ctx.send(f"{member.display_name} has **{count} <:iosskull:1413704062104375416>s** and is ranked **#{rank}** on the leaderboard!")
         
     @skulllb.command(name="reset")
     async def skullreset(self, ctx):
