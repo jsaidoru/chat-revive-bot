@@ -80,13 +80,15 @@ async def on_reaction_add(reaction, user):
                 user_data = kekwdb.get(User.id == user.id)
                 if user_data is not None:
                     kekwdb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
-        elif str(reaction.emoji) == "💀" or str(reaction.emoji) == "☠️":
-            if not skulldb.contains(User.id == user.id):
-                skulldb.insert({'id': user.id, 'count': 1})
+        if str(reaction.emoji) in ["💀", "☠️"]:
+            receiver_id = reaction.message.author.id
+
+            if not skulldb.contains(User.id == receiver_id):
+                skulldb.insert({'id': receiver_id, 'count': 1})
             else:
-                user_data = skulldb.get(User.id == user.id)
+                user_data = skulldb.get(User.id == receiver_id)
                 if user_data is not None:
-                    skulldb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
+                    skulldb.update({'count': user_data['count'] + 1}, User.id == receiver_id)  # type: ignore
 
 async def load():
     for filename in os.listdir("./cogs"):

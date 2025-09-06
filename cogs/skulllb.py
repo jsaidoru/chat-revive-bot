@@ -18,7 +18,7 @@ class SkullLeaderboard(commands.Cog):
         
         all_users = self.skulldb.all()
         if not all_users:
-            await ctx.send("No skull reactions recorded yet <:iosskull:1413688742610473032>")
+            await ctx.send("No skull reactions recorded yet <:iosskull:1413704062104375416>")
             return
 
         sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
@@ -34,7 +34,7 @@ class SkullLeaderboard(commands.Cog):
             description += f"**{i}. {username}**: {count} <:iosskull:1413704062104375416>\n"
 
         embed = discord.Embed(
-            title="<:iosskull:1413688742610473032> Skull Leaderboard <:iosskull:1413688742610473032>",
+            title="<:iosskull:1413704062104375416> Skull Leaderboard <:iosskull:1413704062104375416>",
             description=description,
             color=discord.Color.gold()
         )
