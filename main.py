@@ -66,7 +66,7 @@ User = Query()
 skulldb = TinyDB(f"{storage_location}/skulldb.json")
 @bot.event
 async def on_reaction_add(reaction, user):
-    if user == bot.user:
+    if user.bot:
         return
 
     if user.id == reaction.message.author.id:
