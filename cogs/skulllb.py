@@ -18,7 +18,7 @@ class SkullLeaderboard(commands.Cog):
         
         all_users = self.skulldb.all()
         if not all_users:
-            await ctx.send("No skull reactions recorded yet <:iosskull:1413704062104375416>")
+            await ctx.send("No skull reactions recorded yet <:iosskull:1413708504060924004>")
             return
 
         sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
@@ -31,10 +31,10 @@ class SkullLeaderboard(commands.Cog):
             user = ctx.guild.get_member(user_id) or await ctx.client.fetch_user(user_id)
             username = user.name if user else f"Unknown User ({user_id})"
 
-            description += f"**{i}. {username}**: {count} <:iosskull:1413704062104375416>\n"
+            description += f"**{i}. {username}**: {count} <:iosskull:1413708504060924004>\n"
 
         embed = discord.Embed(
-            title="<:iosskull:1413704062104375416> Skull Leaderboard <:iosskull:1413704062104375416>",
+            title="<:iosskull:1413708504060924004> Skull Leaderboard <:iosskull:1413708504060924004>",
             description=description,
             color=discord.Color.gold()
         )
@@ -62,7 +62,7 @@ class SkullLeaderboard(commands.Cog):
         rank = sorted_users.index(user_entry) + 1
         count = user_entry['count']
 
-        await ctx.send(f"{member.display_name} has **{count} <:iosskull:1413704062104375416>s** and is ranked **#{rank}** on the leaderboard!")
+        await ctx.send(f"{member.display_name} has **{count} <:iosskull:1413708504060924004>s** and is ranked **#{rank}** on the leaderboard!")
         
     @skulllb.command(name="reset")
     async def skullreset(self, ctx):
