@@ -39,7 +39,7 @@ async def balance(ctx, *, name: str | None = None):
         count = skull_entry["count"]  # type: ignore
         description += f"**{count}** <:iosskull:1413708504060924004>"
 
-    await ctx.send(discord.Embed(
+    await ctx.send(embed=discord.Embed(
         title=f"{member}'s Balance",
         description=description,
         color=discord.Color.blue()
