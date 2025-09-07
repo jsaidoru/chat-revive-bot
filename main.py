@@ -74,10 +74,10 @@ async def on_reaction_add(reaction, user):
     
     if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
         if reaction.emoji.id == 1363718257835769916: # KEKW
-            if not kekwdb.contains(User.id == user.id):
+            if not kekwdb.contains(User.id == receiver_id):
                 kekwdb.insert({'id': user.id, 'count': 1})
             else:
-                user_data = kekwdb.get(User.id == user.id)
+                user_data = kekwdb.get(User.id == receiver_id)
                 if user_data is not None:
                     kekwdb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
     if str(reaction.emoji) in ["💀", "☠️"]:
