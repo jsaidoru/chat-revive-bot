@@ -27,17 +27,17 @@ async def balance(ctx, *, name: str | None = None):
 
     kekw_entry = kekwdb.get(User.id == member.id)
     if not kekw_entry:
-        description += "0 <:KEKW:1363718257835769916>"
+        description += "0 <:KEKW:1363718257835769916>\n"
     else:
         count = kekw_entry["count"]  # type: ignore
-        description += f"**{count}** <:KEKW:1363718257835769916>"
+        description += f"**{count}** <:KEKW:1363718257835769916>\n"
 
     skull_entry = skulldb.get(User.id == member.id)
     if not skull_entry:
-        description += "0 <:iosskull:1413708504060924004>"
+        description += "0 <:iosskull:1413708504060924004>\n"
     else:
         count = skull_entry["count"]  # type: ignore
-        description += f"**{count}** <:iosskull:1413708504060924004>"
+        description += f"**{count}** <:iosskull:1413708504060924004>\n"
 
     await ctx.send(embed=discord.Embed(
         title=f"{member}'s Balance",
