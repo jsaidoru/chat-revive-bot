@@ -64,6 +64,7 @@ storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else ".
 kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
 User = Query()
 skulldb = TinyDB(f"{storage_location}/skulldb.json")
+
 @bot.event
 async def on_reaction_add(reaction, user):
     if user.bot:
@@ -77,6 +78,7 @@ async def on_reaction_add(reaction, user):
             if not kekwdb.contains(User.id == receiver_id):
                 kekwdb.insert({'id': user.id, 'count': 1})
             else:
+                receiver_id = reaction.message.author.id
                 user_data = kekwdb.get(User.id == receiver_id)
                 if user_data is not None:
                     kekwdb.update({'count': user_data['count'] + 1}, User.id == user.id) # type: ignore
