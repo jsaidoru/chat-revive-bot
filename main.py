@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256
+from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, reviv
 # , info
 from tinydb import TinyDB, Query
 
@@ -26,9 +26,9 @@ BOT_OWNER_ID = 1085862271399493732
 @bot.event
 async def on_message(message):
     if message.author.bot:
-        return  # Ignore other bots
+        return
     content = message.content
-    if content.startswith(">:"):
+    if content.startswith(">:") or content.startswith(">>>"):
         return
     if message.reference:
         replied_to_message_id = message.reference.message_id
@@ -108,6 +108,7 @@ bot.add_command(pi.pi)
 bot.add_command(echo.echo)
 bot.add_command(execute.execute)
 bot.add_command(sha256.sha256_discord)
+bot.add_command(reviv.reviv)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():

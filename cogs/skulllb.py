@@ -1,49 +1,61 @@
 import discord
 from discord.ext import commands
-from tinydb import TinyDB
+from tinydb import TinyDB, Query
 import os
+
 
 class SkullLeaderboard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+        self.storage_location = (
+            "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
+        )
         self.skulldb = TinyDB(f"{self.storage_location}/skulldb.json")
-    
-    @commands.group(name="skulllb", aliases=["skullleaderboard"], invoke_without_command=True)
+        self.User = Query()
+
+    @commands.group(
+        name="skulllb", aliases=["skullleaderboard"], invoke_without_command=True
+    )
     async def skulllb(self, ctx, *, length: int = 10):
         if length > 20:
             return await ctx.send("⚠️ Max leaderboard length is 20.")
         if length <= 0:
             return await ctx.send("are you stupid")
-        
+
         all_users = self.skulldb.all()
         if not all_users:
-            await ctx.send("No skull reactions recorded yet <:iosskull:1413708504060924004>")
+            await ctx.send(
+                "No skull reactions recorded yet <:iosskull:1413708504060924004>"
+            )
             return
 
-        sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
+        sorted_users = sorted(all_users, key=lambda x: x["count"], reverse=True)
 
         description = ""
         shown = 0
         for entry in sorted_users:
-            user_id = entry['id']
-            count = entry['count']
+            user_id = entry["id"]
+            count = entry["count"]
 
             user = ctx.guild.get_member(user_id) or await ctx.client.fetch_user(user_id)
             if not user or user.bot:
                 continue  # Skip bots and unknown users
 
             shown += 1
-            description += f"**{shown}. {user.name}**: {count} <:iosskull:1413708504060924004>\n"
+            description += (
+                f"**{shown}. {user.name}**: {count} <:iosskull:1413708504060924004>\n"
+            )
             if shown >= length:
                 break
 
         embed = discord.Embed(
             title="<:iosskull:1413708504060924004> Skull Leaderboard <:iosskull:1413708504060924004>",
             description=description,
-            color=discord.Color.gold()
+            color=discord.Color.gold(),
         )
-        embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url)
+        embed.set_footer(
+            text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar.url
+        )
 
         await ctx.send(embed=embed)
 
@@ -56,19 +68,51 @@ class SkullLeaderboard(commands.Cog):
             await ctx.send("Nobody has received any skulls yet 😔")
             return
 
-        sorted_users = sorted(all_users, key=lambda x: x['count'], reverse=True)
+        sorted_users = sorted(all_users, key=lambda x: x["count"], reverse=True)
 
-        user_entry = next((u for u in sorted_users if u['id'] == member.id), None)
+        user_entry = next((u for u in sorted_users if u["id"] == member.id), None)
 
         if not user_entry:
-            await ctx.send(f"{member.display_name} has no skulls <:KEKW:1363718257835769916>")
+            await ctx.send(
+                f"{member.display_name} has no skulls <:KEKW:1363718257835769916>"
+            )
             return
 
         rank = sorted_users.index(user_entry) + 1
-        count = user_entry['count']
+        count = user_entry["count"]
 
-        await ctx.send(f"{member.display_name} has **{count} <:iosskull:1413708504060924004>s** and is ranked **#{rank}** on the leaderboard!")
-        
+        await ctx.send(
+            f"{member.display_name} has **{count} <:iosskull:1413708504060924004>s** and is ranked **#{rank}** on the leaderboard!"
+        )
+
+    @skulllb.command(name="balance", aliases=["bal"])
+    async def balance(self, ctx, *, name: str | None = None):
+        if not name:
+            member = ctx.author
+        else:
+            # Try to find the member in the guild
+            member = discord.utils.find(
+                lambda m: m.name.lower() == name.lower()
+                or (m.nick and m.nick.lower() == name.lower()),
+                ctx.guild.members,
+            )
+            if not member:
+                return await ctx.send(
+                    f"❌ Could not find a member with the name `{name}`"
+                )
+
+        # Lookup in DB
+        entry = self.skulldb.get(self.User.id == member.id)
+        if not entry:
+            return await ctx.send(
+                f"{member.display_name} has no <:iosskull:1413708504060924004>."
+            )
+
+        count = entry["count"]  # type: ignore
+        await ctx.send(
+            f"{member.display_name} has **{count} <:iosskull:1413708504060924004>**."
+        )
+
     @skulllb.command(name="reset")
     async def skullreset(self, ctx):
         if ctx.author.id != 1085862271399493732:
@@ -77,6 +121,7 @@ class SkullLeaderboard(commands.Cog):
 
         self.skulldb.truncate()
         await ctx.send("✅ Leaderboard reset by a chosen one!")
+
 
 async def setup(bot):
     await bot.add_cog(SkullLeaderboard(bot))

@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from tinydb import TinyDB
+from tinydb import TinyDB, Query
 import os
 
 class KekwLeaderboard(commands.Cog):
@@ -8,6 +8,7 @@ class KekwLeaderboard(commands.Cog):
         self.bot = bot
         self.storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
         self.kekwdb = TinyDB(f"{self.storage_location}/kekwdb_dev2.json")
+        self.User = Query()
 
     @commands.group(name="kekwlb", aliases=["kekwleaderboard"], invoke_without_command=True)
     async def kekwlb(self, ctx, *, length: int = 10):
@@ -65,6 +66,33 @@ class KekwLeaderboard(commands.Cog):
 
         await ctx.send(f"<:KEKW:1363718257835769916> {member.display_name}(you) has **{count} <:KEKW:1363718257835769916>s** and is ranked **#{rank}** on the leaderboard!")
 
+    @kekwlb.command(name="balance", aliases=["bal"])
+    async def balance(self, ctx, *, name: str | None = None):
+        if not name:
+            member = ctx.author
+        else:
+            # Try to find the member in the guild
+            member = discord.utils.find(
+                lambda m: m.name.lower() == name.lower()
+                or (m.nick and m.nick.lower() == name.lower()),
+                ctx.guild.members,
+            )
+            if not member:
+                return await ctx.send(
+                    f"❌ Could not find a member with the name `{name}`"
+                )
+
+        # Lookup in DB
+        entry = self.kekwdb.get(self.User.id == member.id)
+        if not entry:
+            return await ctx.send(
+                f"{member.display_name} has no <:KEKW:1363718257835769916>."
+            )
+
+        count = entry["count"]  # type: ignore
+        await ctx.send(
+            f"{member.display_name} has **{count} <:KEKW:1363718257835769916>**."
+        )
     @kekwlb.command(name="reset")
     async def kekwreset(self, ctx):
         if ctx.author.id != 1085862271399493732:
