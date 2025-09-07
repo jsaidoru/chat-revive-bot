@@ -39,7 +39,8 @@ async def balance(ctx, *, name: str | None = None):
         skull_count = skull_entry["count"]  # type: ignore
         description += f"**{skull_count}** <:iosskull:1413708504060924004>\n"
     
-    description += f"**KEKW/skull Ratio: {kekw_count/skull_count}\n"
+    ratio = kekw_count/skull_count*100
+    description += f"**<:KEKW:1363718257835769916>-<:iosskull:1413708504060924004>** Ratio: {kekw_count/skull_count}%\n"
     await ctx.send(embed=discord.Embed(
         title=f"{member}'s Balance",
         description=description,
