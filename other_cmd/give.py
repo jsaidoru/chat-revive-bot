@@ -10,8 +10,8 @@ kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
 User = Query()
 skulldb = TinyDB(f"{storage_location}/skulldb.json")
 
-@commands.command(name="givecurrency")
-async def givecurrency(ctx, member: discord.Member, amount: int, reward_type: str):
+@commands.command(name="give")
+async def give(ctx, member: discord.Member, amount: int, reward_type: str):
     if reward_type.lower() not in ["kekw", "skull"]:
         return await ctx.send("❌ Type must be either `kekw` or `skull`.")
 

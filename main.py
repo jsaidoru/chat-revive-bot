@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, reviv, balance
+from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, reviv, balance, add, give
 # , info
 from tinydb import TinyDB, Query
 
@@ -113,6 +113,8 @@ bot.add_command(execute.execute)
 bot.add_command(sha256.sha256_discord)
 bot.add_command(reviv.reviv)
 bot.add_command(balance.balance)
+bot.add_command(add._add)
+bot.add_command(give.give)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
