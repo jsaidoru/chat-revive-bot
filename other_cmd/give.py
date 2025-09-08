@@ -4,6 +4,13 @@ from tinydb.operations import add, subtract
 from tinydb import TinyDB, Query
 import os
 
+class NaturalNumber(int):
+    def __new__(cls, arg: str):
+        value = int(arg)
+        if value <= 0:
+            raise commands.BadArgument("Amount must be a natural number (greater than 0).")
+        return int.__new__(cls, value)
+
 storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
 User = Query()
 kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
@@ -11,11 +18,9 @@ User = Query()
 skulldb = TinyDB(f"{storage_location}/skulldb.json")
 
 @commands.command(name="give")
-async def give(ctx, member: discord.Member, amount: int, reward_type: str):
+async def give(ctx, member: discord.Member, amount: NaturalNumber, reward_type: str):
     if reward_type.lower() not in ["kekw", "skull"]:
         return await ctx.send("❌ Type must be either `kekw` or `skull`.")
-    if amount < 0:
-        return await ctx.send("nope")
 
     db = kekwdb if reward_type.lower() == "kekw" else skulldb
     giver_id = ctx.author.id
