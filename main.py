@@ -58,7 +58,13 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}")
+    channel_id = 1363717602420981934
+    channel = bot.get_channel(channel_id)
+
+    if isinstance(channel, discord.TextChannel):
+        await channel.send("chat revival bot is fucking online")
+    else:
+        print(f"Logged in as {bot.user}")
 
 storage_location = "/storage" if os.environ.get("COOLIFY_RESOURCE_UUID") else "."
 kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
