@@ -15,7 +15,7 @@ async def give(ctx, member: discord.Member, amount: int, reward_type: str):
     if reward_type.lower() not in ["kekw", "skull"]:
         return await ctx.send("❌ Type must be either `kekw` or `skull`.")
     if amount < 0:
-        return await ctx.send("nope"
+        return await ctx.send("nope")
 
     db = kekwdb if reward_type.lower() == "kekw" else skulldb
     giver_id = ctx.author.id
