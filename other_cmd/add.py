@@ -20,7 +20,9 @@ async def _add(ctx, target: str, amount: int, reward_type: str):
     # Try to resolve user
     member = None
     # Case 1: mention or ID
-    if target.isdigit():
+    if isinstance(target, discord.Member):
+        member = target
+    elif target.isdigit():
         member = ctx.guild.get_member(int(target))
     else:
         # Case 2: username (may need refinement for duplicates)
@@ -39,4 +41,4 @@ async def _add(ctx, target: str, amount: int, reward_type: str):
         db.update(add("count", amount), User.id == receiver_id)
 
     emoji = "<:KEKW:1363718257835769916>" if reward_type.lower() == "kekw" else "<:iosskull:1413708504060924004>"
-    await ctx.send(f"✅ Added {amount} {emoji} to {member.display_name}.")
+    await ctx.send(f"✅ Added {amount} {emoji} to <@{member.id}>.")

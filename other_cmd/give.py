@@ -32,4 +32,4 @@ async def give(ctx, member: discord.Member, amount: int, reward_type: str):
         db.update(add("count", amount), User.id == receiver_id)
 
     emoji = "<:KEKW:1363718257835769916>" if reward_type.lower() == "kekw" else "<:iosskull:1413708504060924004>"
-    await ctx.send(f"✅ <@{ctx.author.id}> gave {amount} {emoji} to {member.display_name}")
+    await ctx.send(f"✅ <@{ctx.author.id}> gave {amount} {emoji} to <@{member.id}>")
