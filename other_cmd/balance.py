@@ -44,7 +44,8 @@ async def balance(ctx, *, name: str | None = None):
     if skull_count != 0:
         ratio = (kekw_count/skull_count)*100
     else:
-        ratio = 0
+        ratio = float('inf')
+    
     description += f"**<:KEKW:1363718257835769916>-<:iosskull:1413708504060924004> Ratio**: {ratio:.0f}%\n"
     await ctx.send(embed=discord.Embed(
         title=f"{member}'s Balance",
