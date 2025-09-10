@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, reviv, balance, add, give
+from other_cmd import execute, roll, help, youcanonlyusethisonceinyourlife, pingeveryone, ask, coolify, pi, echo, sha256, reviv, balance, add, give, ban
 # , info
 from tinydb import TinyDB, Query
 
@@ -79,6 +79,11 @@ async def on_reaction_add(reaction, user):
     if user.id == reaction.message.author.id:
         return
     
+    with open("users.txt", "r") as userlist:
+        list = userlist.read()
+        if str(user.id) not in list:
+            return
+    
     if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
         if reaction.emoji.id == 1363718257835769916: # KEKW
             receiver_id = reaction.message.author.id
@@ -121,6 +126,7 @@ bot.add_command(reviv.reviv)
 bot.add_command(balance.balance)
 bot.add_command(add._add)
 bot.add_command(give.give)
+bot.add_command(ban.ban)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
