@@ -88,7 +88,7 @@ async def on_reaction_add(reaction, user):
         if reaction.emoji.id == 1363718257835769916: # KEKW
             receiver_id = reaction.message.author.id
             user_data = kekwdb.get(User.id == receiver_id)
-            
+
             if not kekwdb.contains(User.id == receiver_id):
                 kekwdb.insert({'id': receiver_id, 'count': 0}) # rare cases where receivers isnt cached
             else:
@@ -160,6 +160,7 @@ bot.add_command(balance.balance)
 bot.add_command(add._add)
 bot.add_command(give.give)
 bot.add_command(ban.ban)
+bot.add_command(ban.unban)
 
 TOKEN = os.environ.get("BOT_TOKEN")
 async def main():
