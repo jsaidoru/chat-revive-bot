@@ -87,6 +87,39 @@ async def on_reaction_add(reaction, user):
     if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
         if reaction.emoji.id == 1363718257835769916: # KEKW
             receiver_id = reaction.message.author.id
+            user_data = kekwdb.get(User.id == receiver_id)
+            
+            if not kekwdb.contains(User.id == receiver_id):
+                kekwdb.insert({'id': receiver_id, 'count': 0}) # rare cases where receivers isnt cached
+            else:
+                if user_data is not None:
+                    kekwdb.update({'count': user_data['count'] - 1}, User.id == receiver_id) # type: ignore
+    if str(reaction.emoji) in ["💀", "☠️"]:
+        receiver_id = reaction.message.author.id
+
+        if not skulldb.contains(User.id == receiver_id):
+            skulldb.insert({'id': receiver_id, 'count': 1})
+        else:
+            user_data = skulldb.get(User.id == receiver_id)
+            if user_data is not None:
+                skulldb.update({'count': user_data['count'] - 1}, User.id == receiver_id)  # type: ignore
+
+@bot.event
+async def on_reaction_remove(reaction, user):
+    if user.bot:
+        return
+
+    if user.id == reaction.message.author.id:
+        return
+    
+    with open("users.txt", "r") as userlist:
+        list = userlist.read()
+        if str(user.id) not in list:
+            return
+    
+    if isinstance(reaction.emoji, discord.Emoji) or isinstance(reaction.emoji, discord.PartialEmoji):
+        if reaction.emoji.id == 1363718257835769916: # KEKW
+            receiver_id = reaction.message.author.id
             if not kekwdb.contains(User.id == receiver_id):
                 kekwdb.insert({'id': receiver_id, 'count': 1})
             else:
