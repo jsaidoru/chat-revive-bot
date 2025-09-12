@@ -21,8 +21,8 @@ async def youcanonlyusethisonceinyourlife(ctx):
 
     # Check if user is already in cooldown
     record = cooldown_db.get(User.user_id == user_id)
-    if record and now < record["cooldown_until"]:
-        remaining = record["cooldown_until"] - now
+    if record and now < record["cooldown_until"]: # type: ignore
+        remaining = record["cooldown_until"] - now # type: ignore
         year = remaining / 31556926
         await ctx.send(f"⏳ Wait {hhmmss(remaining)} (or {year:.9f} years) :3")
         return

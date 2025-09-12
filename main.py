@@ -79,7 +79,7 @@ async def on_reaction_add(reaction, user):
     if user.id == reaction.message.author.id:
         return
     
-    with open("users.txt", "r") as userlist:
+    with open("./storage/userlist.txt", "r") as userlist:
         list = userlist.read()
         if str(user.id) not in list:
             return
@@ -112,7 +112,7 @@ async def on_reaction_remove(reaction, user):
     if user.id == reaction.message.author.id:
         return
     
-    with open("users.txt", "r") as userlist:
+    with open("./storage/userlist.txt", "r") as userlist:
         list = userlist.read()
         if str(user.id) not in list:
             return
