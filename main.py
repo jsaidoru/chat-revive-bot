@@ -125,8 +125,7 @@ async def on_reaction_remove(reaction, user):
             else:
                 
                 user_data = kekwdb.get(User.id == receiver_id)
-                if user_data is not None:
-                    kekwdb.update({'count': user_data['count'] + 1}, User.id == receiver_id) # type: ignore
+                kekwdb.update({'count': user_data['count'] + 1}, User.id == receiver_id) # type: ignore
     if str(reaction.emoji) in ["💀", "☠️"]:
         receiver_id = reaction.message.author.id
 
@@ -134,8 +133,7 @@ async def on_reaction_remove(reaction, user):
             skulldb.insert({'id': receiver_id, 'count': 1})
         else:
             user_data = skulldb.get(User.id == receiver_id)
-            if user_data is not None:
-                skulldb.update({'count': user_data['count'] + 1}, User.id == receiver_id)  # type: ignore
+            skulldb.update({'count': user_data['count'] + 1}, User.id == receiver_id)  # type: ignore
 
 async def load():
     for filename in os.listdir("./cogs"):
