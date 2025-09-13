@@ -33,7 +33,7 @@ async def work(ctx):
         kekwdb.update({'count': user_data['count'] + gain}, User.id == author_id) # type: ignore
 
         embed = discord.Embed(
-            description = f"You gained {gain} from working!!"
+            description = f"You gained {gain} <:KEKW:1363718257835769916> from working!!"
         )
         embed.set_author(
             name=ctx.author.name,
