@@ -9,6 +9,7 @@ kekwdb = TinyDB(f"{storage_location}/kekwdb_dev2.json")
 User = Query()
 
 @commands.command(name="work", help="Work to gain KEKWs")
+@commands.cooldown(rate=1, per=600, type=commands.BucketType.user)
 async def work(ctx):
     author_id = ctx.author.id
     if not kekwdb.contains(User.id == author_id):

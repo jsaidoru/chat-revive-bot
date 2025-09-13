@@ -2,7 +2,7 @@
 name = "chat-revive-bot"
 version = "0.1.0"
 description = "A chatbot revival tool"
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.13"
 dependencies = [
   "aiohappyeyeballs==2.6.1",
   "aiohttp==3.12.13",
