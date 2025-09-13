@@ -49,7 +49,9 @@ async def work(ctx):
             gain = random.randint(20, max(20, amount // 3))
             kekwdb.update({'count': user_data['count'] + gain}, User.id == author_id) # type: ignore
 
-            random_message = get_random_line("work_msg.txt")
+            base_path = os.path.dirname(__file__)  # folder of the current script
+            filepath = os.path.join(base_path, "work_msg.txt")
+            random_message = get_random_line(filepath)
 
             embed = discord.Embed(
                 description = f"{random_message} {gain} <:KEKW:1363718257835769916>!!",
@@ -78,7 +80,9 @@ async def work(ctx):
             gain = random.randint(20, max(20, amount // 3))
             skulldb.update({'count': user_data['count'] + gain}, User.id == author_id) # type: ignore
 
-            random_message = get_random_line("work_msg.txt")
+            base_path = os.path.dirname(__file__)  # folder of the current script
+            filepath = os.path.join(base_path, "work_msg.txt")
+            random_message = get_random_line(filepath)
 
             embed = discord.Embed(
                 description = f"{random_message} {gain} 💀!!",
