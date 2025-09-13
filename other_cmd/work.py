@@ -15,7 +15,8 @@ async def work(ctx):
     if not kekwdb.contains(User.id == author_id):
         kekwdb.insert({'id': author_id, 'count': 20})
         embed = discord.Embed(
-            description = "Here is 20 <:KEKW:1363718257835769916> for your first time working!"
+            description = "Here is 20 <:KEKW:1363718257835769916> for your first time working!",
+            color=random.randint(0, 0xFFFFFF)
         )
         embed.set_author(
             name=ctx.author.name,
