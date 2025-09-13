@@ -46,7 +46,7 @@ async def work(ctx):
         else:
             user_data = kekwdb.get(User.id == author_id)
             amount = user_data["count"] # type: ignore
-            gain = random.randint(20, max(20, amount // 3))
+            gain = random.randint(20, max(30, amount // 3))
             kekwdb.update({'count': user_data['count'] + gain}, User.id == author_id) # type: ignore
 
             base_path = os.path.dirname(__file__)  # folder of the current script
@@ -77,7 +77,7 @@ async def work(ctx):
         else:
             user_data = skulldb.get(User.id == author_id)
             amount = user_data["count"] # type: ignore
-            gain = random.randint(20, max(20, amount // 3))
+            gain = random.randint(20, max(30, amount // 3))
             skulldb.update({'count': user_data['count'] + gain}, User.id == author_id) # type: ignore
 
             base_path = os.path.dirname(__file__)  # folder of the current script
