@@ -104,6 +104,7 @@ class Lottery(commands.Cog):
         if entry["count"] < cost: # type: ignore
             return await ctx.send(f"You don't have enough {self.kekw_emoji}!")
         numbers = random.sample(range(1, 56), 6)
+        await ctx.send(f"You bought a ticket! Your number is {', '.join(map(str, numbers))}")
         self.kekwdb.update(subtract("count", cost), self.User.id == buyer_id)
         self.ticket_db.insert({"id": buyer_id, "numbers": numbers, "date": str(datetime.date.today())})
 
