@@ -1,4 +1,4 @@
 # .gitignore
 .env
-other_cmd/configs.py
 */__pycache__/
+.venv
