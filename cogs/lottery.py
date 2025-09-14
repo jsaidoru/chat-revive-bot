@@ -1,7 +1,7 @@
 from discord.ext import tasks, commands
 import discord
 from tinydb import TinyDB, Query
-from tinydb.operations import subtract
+from tinydb.operations import add, subtract
 import os
 import random
 import datetime
@@ -51,7 +51,7 @@ class Lottery(commands.Cog):
             if reward > 0:
                 winners.append((user_id, matches, reward))
                 # TODO: update user’s balance in your currency DB
-                # self.coin_db.update(add("balance", reward), self.User.id == user_id)
+                self.kekwdb.update(add("count", reward), self.User.id == user_id)
 
         # Announce
         channel = self.bot.get_channel(1363717602420981934)
