@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python3"]
+nixPkgs = ["python3", "uv"]
 
 [phases.install]
 cmds = ["uv sync"]
