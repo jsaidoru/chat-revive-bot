@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python3"]
+
+[phases.install]
+cmds = ["uv sync"]
+
+[start]
+cmd = "python main.py"
