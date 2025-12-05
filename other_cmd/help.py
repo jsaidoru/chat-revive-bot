@@ -12,14 +12,14 @@ def get_all_commands(self, cmd: commands.Command, parent=""):
         cmds.append((qualified_name, cmd.help))
     return cmds
 
-@commands.command(name="help")
+@bot.command(name="help")
 async def help(ctx, *, command_name: str = None):
     embed = discord.Embed(color=discord.Color.blurple())
 
     if command_name is None:
         # No args → show all commands grouped by cog
         embed.title = "📘 Help Menu"
-        embed.description = "Use `>help <command>` for more details."
+        embed.description = "Dùng `c!help <lệnh>` để có thêm chi tiết."
 
         cog_commands = {}
 
@@ -32,35 +32,35 @@ async def help(ctx, *, command_name: str = None):
             except commands.CommandError:
                 continue
 
-            cog = cmd.cog_name or "Uncategorized"
+            cog = cmd.cog_name or "Chưa phân loại"
             cog_commands.setdefault(cog, []).append(cmd)
 
         for cog, commands_list in cog_commands.items():
             value = ""
             for cmd in commands_list:
                 if isinstance(cmd, commands.Group):
-                    value += f"• `>{cmd.name}` (group)\n"
+                    value += f"• `>{cmd.name}` (nhóm lệnh)\n"
                 else:
                     value += f"• `>{cmd.name}`\n"
 
             embed.add_field(
-                name=f"📂 {cog}", value=value or "No commands.", inline=False
+                name=f"📂 {cog}", value=value or "Không có lệnh.", inline=False
             )
         await ctx.send(embed=embed)
     else:
         cmd = ctx.bot.get_command(command_name)
         if cmd is None:
-            await ctx.send(f"❌ Command `{command_name}` not found.")
+            await ctx.send(f"❌ Không tìm thấy lệnh `{command_name}`.")
             return
 
         embed.title = f"❓ Help: `{cmd.qualified_name}`"
-        embed.description = cmd.help or "No description provided."
+        embed.description = cmd.help or "Không có mô tả."
 
         if isinstance(cmd, commands.Group) and cmd.commands:
             value = ""
             for sub in cmd.commands:
                 value += (
-                     f"• `>{cmd.name} {sub.name}` - {sub.help or 'No description'}\n"
+                     f"• `>{cmd.name} {sub.name}` - {sub.help or 'Không có mô tả'}\n"
                 )
             embed.add_field(name="Subcommands", value=value, inline=False)
 
